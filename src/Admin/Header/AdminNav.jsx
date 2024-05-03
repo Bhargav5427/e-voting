@@ -1,51 +1,133 @@
-import { Sidenav, Nav, Toggle } from 'rsuite';
-import DashboardIcon from '@rsuite/icons/legacy/Dashboard';
-import UserInfoIcon from '@rsuite/icons/UserInfo';
-import ListIcon from '@rsuite/icons/List';
-import PeopleFliterIcon from '@rsuite/icons/PeopleFliter';
-import AdminIcon from '@rsuite/icons/Admin';
-import PeopleSpeakerIcon from '@rsuite/icons/PeopleSpeaker';
-import 'rsuite/dist/rsuite.min.css';
-import React from 'react';
-import { Link } from 'react-router-dom';
+import "../../index.css";
+import React, { useState } from "react";
+import { HiArrowsPointingIn, HiArrowsPointingOut } from "react-icons/hi2";
+import { MdDashboard } from "react-icons/md";
+import { FaUser, FaPeopleGroup } from "react-icons/fa6";
+import { SiGitconnected } from "react-icons/si";
+import { BsInboxesFill } from "react-icons/bs";
+import {
+    Sidebar,
+    Menu,
+    MenuItem
+} from "react-pro-sidebar";
+import { Link } from "react-router-dom";
 
 const AdminNav = () => {
+    const [collapsed, setCollapsed] = useState(false);
 
-    const [expanded, setExpanded] = React.useState(true);
-    const [activeKey, setActiveKey] = React.useState('1');
+    const handleCollapsedChange = () => {
+        setCollapsed(!collapsed);
+    };
+
 
     return (
-        <>
-            <div style={{ width: 240 }}>
-                <Sidenav expanded={expanded} style={{ height: "100vh" }} >
-                    <Sidenav.Header style={{ margin: "70px 0 90px" }}>
-                        <Nav className='d-flex align-item-center justify-content-center '>
-                            <AdminIcon style={{ fontSize: '2em', position: 'fixed', zIndex: 99 }} />
-                        </Nav>
-                    </Sidenav.Header>
-                    <Sidenav.Body>
-                        <Nav activeKey={activeKey} onSelect={setActiveKey}>
-                            <Nav.Item eventKey="1" icon={<DashboardIcon />}>
-                                <Link to={"/dashboard"} style={{ textDecoration: 'none', color: "#808080" }}>Dashboard</Link>
-                            </Nav.Item>
-                            <Nav.Item eventKey="2" icon={<PeopleFliterIcon />}>
-                              <Link to={"/party"} style={{ textDecoration: 'none', color: "#808080" }}>Party</Link>
-                            </Nav.Item>     
-                            <Nav.Item eventKey="3" icon={<ListIcon />}>
-                                <Link to={"/list"} style={{ textDecoration: 'none', color: "#808080" }}>List</Link>
-                            </Nav.Item>
-                            <Nav.Item eventKey="4" icon={<PeopleSpeakerIcon />}>
-                                <Link to={"/election"} style={{ textDecoration: 'none', color: "#808080" }}>Election</Link>
-                            </Nav.Item>
-                            <Nav.Item eventKey="5" icon={<UserInfoIcon />}>
-                                <Link to={"/user"} style={{ textDecoration: 'none', color: "#808080" }}>User</Link>
-                            </Nav.Item>
-                        </Nav>
-                    </Sidenav.Body>
-                    <Sidenav.Toggle onToggle={expanded => setExpanded(expanded)} />
-                </Sidenav>
-            </div>
-        </>
-    )
-}
+        <div>
+            <Sidebar
+                style={{ height: "100%", position: "absolute", }}
+                collapsed={collapsed}
+                
+            >
+                <main>
+                    <Menu className="mb-5">
+                        {collapsed ? (
+                            <MenuItem
+                                icon={<HiArrowsPointingOut />}
+                                onClick={handleCollapsedChange}
+                            ></MenuItem>
+                        ) : (
+                            <MenuItem
+                                suffix={<HiArrowsPointingIn />}
+                                onClick={handleCollapsedChange}
+                            >
+                                <div
+                                    style={{
+                                        padding: "9px",
+                                        color: "gray",
+                                        fontWeight: "bolder",
+                                        fontSize: 14,
+                                        letterSpacing: "1px"
+                                    }}
+                                >
+                                    ADMiN
+                                </div>
+                            </MenuItem>
+                        )}
+                    </Menu>
+
+                    <Menu>
+                        <Link
+                            to="/dashboard"
+                            style={{ textDecoration: "none" }}
+                        >
+                            <MenuItem
+                                icon={<MdDashboard />}
+                                className={window.location.pathname.includes("dashboard") ? "active" : ""}
+                               
+                            >
+                                Dashboard
+                            </MenuItem>
+                        </Link>
+                    </Menu>
+                    <Menu>
+                        <Link
+                            to="/party"
+                            style={{ textDecoration: "none" }}
+                        >
+                            <MenuItem
+                                icon={<FaPeopleGroup />}
+                                className={window.location.pathname.includes("party") ? "active" : ""}
+                               
+                            >
+                                Party
+                            </MenuItem>
+                        </Link>
+                    </Menu>
+                    <Menu>
+                        <Link
+                            to="/election"
+                            style={{ textDecoration: "none" }}
+                        >
+                            <MenuItem
+                                icon={<BsInboxesFill />}
+                                className={window.location.pathname.includes("election") ? "active" : ""}
+                               
+                            >
+                                Election
+                            </MenuItem>
+                        </Link>
+                    </Menu>
+                    <Menu>
+                        <Link
+                            to="/connection"
+                            style={{ textDecoration: "none" }}
+                        >
+                            <MenuItem
+                                icon={<SiGitconnected />}
+                                className={window.location.pathname.includes("connection") ? "active" : ""}
+                               
+                            >
+                                Connection
+                            </MenuItem>
+                        </Link>
+                    </Menu>
+                    <Menu>
+                        <Link
+                            to="/user"
+                            style={{ textDecoration: "none" }}
+                        >
+                            <MenuItem
+                                icon={<FaUser />}
+                                className={window.location.pathname.includes("user") ? "active" : ""}
+                               
+                            >
+                                User
+                            </MenuItem>
+                        </Link>
+                    </Menu>
+                </main>
+            </Sidebar>
+        </div>
+    );
+};
+
 export default AdminNav;
