@@ -19,9 +19,7 @@ const Election = () => {
   const inputTitles = ["election_name", "date"];
   const inputTypes = ["text", "date"];
 
-  const { data, success, message } = useSelector(
-    (state) => state.admin.election,
-  );
+  const data = useSelector((state) => state.admin.election);
   console.log(data);
   const isLoading = useSelector((state) => state.admin.isLoading);
   const error = useSelector((state) => state.admin.error);
@@ -30,13 +28,13 @@ const Election = () => {
 
   useEffect(() => {
     dispatch(fetchData({ endpoint: election_get_req, dataType: "election" }));
-  }, [dispatch]);
+  }, []);
 
   useEffect(() => {
-    if (success) {
-      dispatch(fetchData());
-    }
-  }, [success, dispatch]);
+    // if (success) {
+    // }
+    dispatch(fetchData());
+  }, [dispatch]);
 
   if (isLoading) {
     return "Loading...";
@@ -52,7 +50,7 @@ const Election = () => {
         payload: formData,
         endpoint: election_post_req,
         dataType: "election",
-      }),
+      })
     );
   };
 
@@ -74,7 +72,7 @@ const Election = () => {
 
   const handleDelete = (id) => {
     dispatch(
-      deleteData({ endpoint: election_delete_req, id, dataType: "election" }),
+      deleteData({ endpoint: election_delete_req, id, dataType: "election" })
     );
   };
 

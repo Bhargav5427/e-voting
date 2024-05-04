@@ -1,73 +1,86 @@
-import { Box, Grid } from '@mui/material'
-import React from 'react'
+import { Box, Grid } from "@mui/material";
+import React from "react";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
 import TextField from "@mui/material/TextField";
-import DataTable from '../../Atoms/DataTable';
-import AddButton from '../../Atoms/Button';
+import DataTable from "../../Atoms/DataTable";
+import AddButton from "../../Atoms/Button";
 
 const User = () => {
-
   // Atomic Button
-  const inputTitles = ['Election Name', 'Election Date'];
-  const inputTypes = ['text', 'date'];
+  const inputTitles = ["Election Name", "Election Date"];
+  const inputTypes = ["text", "date"];
   const handleSubmit = (formData) => {
-    console.log('Submitted data:', formData);
+    console.log("Submitted data:", formData);
   };
 
   // Atomic Table
   let columns = [
     {
-      id: 'ElectionName',
-      label: 'Election Name',
+      id: "ElectionName",
+      label: "Election Name",
       minWidth: 170,
-      align: 'center',
+      align: "center",
     },
     {
-      id: 'date',
-      label: 'date',
+      id: "date",
+      label: "date",
       minWidth: 170,
-      align: 'center',
-    }
-  ]
+      align: "center",
+    },
+  ];
   let rows = [
     {
-      ElectionName: 'India', date: '27/34/2003', PartySCode: 'bjp',
+      ElectionName: "India",
+      date: "27/34/2003",
+      PartySCode: "bjp",
     },
     {
-      ElectionName: 'India', date: '27/34/2003', PartySCode: 'bjp',
+      ElectionName: "India",
+      date: "27/34/2003",
+      PartySCode: "bjp",
     },
     {
-      ElectionName: 'India', date: '27/34/2003', PartySCode: 'bjp',
+      ElectionName: "India",
+      date: "27/34/2003",
+      PartySCode: "bjp",
     },
     {
-      ElectionName: 'India', date: '27/34/2003', PartySCode: 'bjp',
+      ElectionName: "India",
+      date: "27/34/2003",
+      PartySCode: "bjp",
     },
     {
-      ElectionName: 'India', date: '27/34/2003', PartySCode: 'bjp',
+      ElectionName: "India",
+      date: "27/34/2003",
+      PartySCode: "bjp",
     },
     {
-      ElectionName: 'India', date: '27/34/2003', PartySCode: 'bjp',
+      ElectionName: "India",
+      date: "27/34/2003",
+      PartySCode: "bjp",
     },
     {
-      ElectionName: 'India', date: '27/34/2003', PartySCode: 'bjp',
+      ElectionName: "India",
+      date: "27/34/2003",
+      PartySCode: "bjp",
     },
     {
-      ElectionName: 'India', date: '27/34/2003', PartySCode: 'bjp',
+      ElectionName: "India",
+      date: "27/34/2003",
+      PartySCode: "bjp",
     },
-
-  ]
+  ];
 
   // handleDelete
   let handleDelete = () => {
     console.log("delete");
-  }
-
+  };
 
   // handleUpdate
   let handleUpdate = () => {
     console.log("Update");
-  }
+  };
   return (
     <>
       <Grid
@@ -93,13 +106,20 @@ const User = () => {
           title="Add User"
           inputTitles={inputTitles}
           inputTypes={inputTypes}
-          onSubmit={handleSubmit} />
+          onSubmit={handleSubmit}
+        />
       </Grid>
       <Box mt={6}>
-        <DataTable columns={columns} rows={rows} onDelete={handleDelete} onUpdate={handleUpdate} height={500} />
+        <DataTable
+          columns={columns}
+          rows={rows}
+          onDelete={handleDelete}
+          onUpdate={handleUpdate}
+          height={500}
+        />
       </Box>
     </>
-  )
-}
+  );
+};
 
-export default User
+export default User;

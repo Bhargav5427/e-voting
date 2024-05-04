@@ -5,6 +5,12 @@ import SearchIcon from "@mui/icons-material/Search";
 import TextField from "@mui/material/TextField";
 import DataTable from "../../Atoms/DataTable";
 import AddButton from "../../Atoms/Button";
+import Button from "@mui/joy/Button";
+import Modal from "@mui/joy/Modal";
+import ModalClose from "@mui/joy/ModalClose";
+import Typography from "@mui/joy/Typography";
+import Sheet from "@mui/joy/Sheet";
+import { FaPlus } from "react-icons/fa6";
 import {
   PostData,
   deleteData,
@@ -21,8 +27,9 @@ import {
 const Party = () => {
   let dispatch = useDispatch();
   // Atomic Button
-  const inputTitles = ["party_name", "party_logo", "short_code"];
-  const inputTypes = ["text", "text"];
+  const inputTitles = ["party_name", "short_code", "party_logo"];
+  const inputTypes = ["text", "text", "file"];
+  const [open, setOpen] = React.useState(false);
 
   const { data, success, message } = useSelector((state) => state.admin.party);
   console.log(data);
@@ -52,7 +59,7 @@ const Party = () => {
         payload: formData,
         endpoint: party_post_req,
         dataType: "party",
-      }),
+      })
     );
   };
 
@@ -93,6 +100,7 @@ const Party = () => {
   const handleUpdate = () => {
     console.log("Update");
   };
+
   return (
     <>
       <Grid
@@ -114,12 +122,52 @@ const Party = () => {
             size="small"
           />
         </form>
-        <AddButton
-          title="Add Party"
-          inputTitles={inputTitles}
-          inputTypes={inputTypes}
-          onSubmit={handleSubmit}
-        />
+        <div>
+          <Button
+            variant="outlined"
+            color="neutral"
+            onClick={() => setOpen(true)}
+          >
+            <FaPlus /> Add Party
+          </Button>
+          <Modal
+            aria-labelledby="modal-title"
+            aria-describedby="modal-desc"
+            open={open}
+            onClose={() => setOpen(false)}
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Sheet
+              variant="outlined"
+              sx={{
+                maxWidth: 500,
+                borderRadius: "md",
+                p: 3,
+                boxShadow: "lg",
+              }}
+            >
+              <ModalClose variant="plain" sx={{ m: 1 }} />
+              <Typography
+                component="h2"
+                id="modal-title"
+                level="h4"
+                textColor="inherit"
+                fontWeight="lg"
+                mb={1}
+              >
+                This is the modal title
+              </Typography>
+              <Typography id="modal-desc" textColor="text.tertiary">
+                Make sure to use <code>aria-labelledby</code> on the modal
+                dialog with an optional <code>aria-describedby</code> attribute.
+              </Typography>
+            </Sheet>
+          </Modal>
+        </div>
       </Grid>
       <Box mt={11}>
         <DataTable
