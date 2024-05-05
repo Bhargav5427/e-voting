@@ -26,6 +26,7 @@ export const fetchData = createAsyncThunk(
 
 export const postData = createAsyncThunk("postData", async (data) => {
   let { endpoint, payload, dataType } = data;
+  console.log(payload);
   try {
     const res = await axios.post(Base_url + endpoint, payload);
     // console.log(res);
@@ -41,7 +42,7 @@ export const deleteData = createAsyncThunk("deleteData", async (data) => {
   try {
     const res = await axios.delete(Base_url + endpoint + id);
     console.log(res, "delete");
-  
+
     return { data: id, dataType };
   } catch (err) {
     throw err;
@@ -78,6 +79,9 @@ export const adminSlice = createSlice({
           case "election":
             state.election = data;
             break;
+          case "connection":
+            state.connection = data;
+            break;
           default:
             break;
         }
@@ -100,10 +104,13 @@ export const adminSlice = createSlice({
         // console.log(data.data);
         switch (dataType) {
           case "party":
-            state.party = state.party.concat(data);
+            state.party = state.party.concat(data.data);
             break;
           case "election":
             state.election = state.election.concat(data.data);
+            break;
+          case "connection":
+            state.connection = state.connection.concat(data.data);
             break;
           default:
             break;
@@ -127,10 +134,15 @@ export const adminSlice = createSlice({
         console.log(dataType);
         switch (dataType) {
           case "party":
-            state.party = state.party.filter((item) => item._id !== data);
+            state.party = state.party.filter((item) => item._id != data);
             break;
           case "election":
             state.election = state.election.filter((item) => item._id != data);
+            break;
+          case "connection":
+            state.connection = state.connection.filter(
+              (item) => item._id != data
+            );
             break;
           default:
             break;

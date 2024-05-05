@@ -31,8 +31,6 @@ const Election = () => {
   }, []);
 
   useEffect(() => {
-    // if (success) {
-    // }
     dispatch(fetchData());
   }, [dispatch]);
 

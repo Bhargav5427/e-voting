@@ -10,7 +10,6 @@ import Modal from "@mui/joy/Modal";
 import ModalClose from "@mui/joy/ModalClose";
 import Typography from "@mui/joy/Typography";
 import Sheet from "@mui/joy/Sheet";
-import { FaPlus } from "react-icons/fa6";
 import {
   PostData,
   deleteData,
@@ -23,6 +22,7 @@ import {
   party_get_req,
   party_post_req,
 } from "../../Redux-Toolkit/Constant";
+import { Add } from "@mui/icons-material";
 
 const Party = () => {
   let dispatch = useDispatch();
@@ -31,7 +31,7 @@ const Party = () => {
   const inputTypes = ["text", "text", "file"];
   const [open, setOpen] = React.useState(false);
 
-  const { data, success, message } = useSelector((state) => state.admin.party);
+  const data = useSelector((state) => state.admin.party);
   console.log(data);
   const isLoading = useSelector((state) => state.admin.isLoading);
   const error = useSelector((state) => state.admin.error);
@@ -40,10 +40,8 @@ const Party = () => {
     dispatch(fetchData({ endpoint: party_get_req, dataType: "party" }));
   }, [dispatch]);
   useEffect(() => {
-    if (success) {
-      dispatch(fetchData());
-    }
-  }, [success, dispatch]);
+    dispatch(fetchData());
+  }, [dispatch]);
 
   if (isLoading) {
     return "loading...";
@@ -53,15 +51,33 @@ const Party = () => {
     return error;
   }
 
-  const handleSubmit = (formData) => {
-    dispatch(
-      postData({
-        payload: formData,
-        endpoint: party_post_req,
-        dataType: "party",
-      })
-    );
+const handleSubmit = (event) => {
+  event.preventDefault();
+
+  const formData = new FormData();
+  formData.append("party_name", event.target.elements["party-name"].value);
+  formData.append("party_logo", event.target.elements["party-logo"].files[0]);
+  formData.append(
+    "short_code",
+    event.target.elements["party-short-code"].value
+  );
+
+  const partyData = {
+    party_name: event.target.elements["party-name"].value,
+    party_logo: event.target.elements["party-logo"].files[0],
+    short_code: event.target.elements["party-short-code"].value,
   };
+
+  dispatch(
+    postData({
+      payload: partyData,
+      endpoint: party_post_req,
+      dataType: "party",
+    })
+  );
+
+  setOpen(false); // Close the modal after submission
+};
 
   // Atomic Table
   let columns = [
@@ -128,7 +144,8 @@ const Party = () => {
             color="neutral"
             onClick={() => setOpen(true)}
           >
-            <FaPlus /> Add Party
+            <Add />
+            &nbsp; Add Party
           </Button>
           <Modal
             aria-labelledby="modal-title"
@@ -159,12 +176,34 @@ const Party = () => {
                 fontWeight="lg"
                 mb={1}
               >
-                This is the modal title
+                Add Party
               </Typography>
-              <Typography id="modal-desc" textColor="text.tertiary">
-                Make sure to use <code>aria-labelledby</code> on the modal
-                dialog with an optional <code>aria-describedby</code> attribute.
-              </Typography>
+              <form onSubmit={handleSubmit}>
+                <TextField
+                  id="party-name"
+                  label="Party Name"
+                  variant="outlined"
+                  fullWidth
+                  required
+                />
+                <input
+                  type="file"
+                  id="party-logo"
+                  name="partyLogo"
+                  accept="image/*"
+                  required
+                />
+                <TextField
+                  id="party-short-code"
+                  label="Party Short Code"
+                  variant="outlined"
+                  fullWidth
+                  required
+                />
+                <Button type="submit" variant="contained" color="primary">
+                  Submit
+                </Button>
+              </form>
             </Sheet>
           </Modal>
         </div>
