@@ -1,5 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
-import Card from "react-bootstrap/Card";
+import React, { useRef } from "react";
 import Swal from "sweetalert2";
 import axios from "axios";
 import Avatar from "@mui/material/Avatar";
@@ -15,6 +14,7 @@ function Login() {
   let name = useRef();
   let password = useRef();
 
+  // CHECKING LOGIN INFO
   let handleSubmit = async () => {
     let data = {
       cardNo: name.current.value,
@@ -41,10 +41,13 @@ function Login() {
       let res = await axios
         .post("http://13.127.211.205:8000/v1/login/user", data)
         .catch((e) => console.log(e));
-        console.log(data, "deraaaa");
       if (res?.status == 200) {
-        localStorage.setItem('role', 'user'); 
-    
+
+        // SET LOGIN INFO TO LOCALSTORAGE
+        localStorage.setItem("role", "user");
+        localStorage.setItem("userData", JSON.stringify(res.data.data));
+
+        // SWEET ALERT
         const Toast = Swal.mixin({
           toast: true,
           position: "top",
@@ -66,6 +69,8 @@ function Login() {
         name.current.value = "";
         password.current.value = "";
       } else {
+
+        // SWEET ALERT
         const Toast = Swal.mixin({
           toast: true,
           position: "top",
@@ -86,8 +91,7 @@ function Login() {
     }
   };
 
-  
-  const handleAdminRole = () =>  {
+  const handleAdminRole = () => {
     window.location.href = "/adminlogin";
   };
   return (

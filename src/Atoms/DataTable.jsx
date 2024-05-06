@@ -40,7 +40,7 @@ export default function DataTable({
 
   return (
     <Paper
-      sx={{ width: "97%", overflow: "hidden", border: "1px solid #d7d7d7" }}
+      sx={{ maxWidth: "97%", overflow: "hidden", border: "1px solid #d7d7d7" }}
     >
       <TableContainer sx={{ maxHeight: height }}>
         <Table stickyHeader aria-label="sticky table">

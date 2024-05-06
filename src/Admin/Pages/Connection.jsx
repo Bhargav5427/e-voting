@@ -9,14 +9,16 @@ import {
 } from "@mui/material";
 import { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchData, postData } from "../../Redux-Toolkit/Slice/AdminSlice";
+import { deleteData, fetchData, postData } from "../../Redux-Toolkit/Slice/AdminSlice";
 import {
   election_get_req,
   party_get_req,
   party_get_req_id,
+  partylist_delete_req,
   partylist_get_req,
   partylist_post_req,
 } from "../../Redux-Toolkit/Constant";
+import { useEffect } from "react";
 
 export default function Connection() {
   // DropDown
@@ -36,13 +38,13 @@ export default function Connection() {
 
   const dispatch = useDispatch();
 
-  React.useEffect(() => {
+  useEffect(() => {
     dispatch(fetchData({ endpoint: election_get_req, dataType: "election" }));
   }, []);
-  React.useEffect(() => {
+  useEffect(() => {
     dispatch(fetchData({ endpoint: party_get_req, dataType: "party" }));
   }, []);
-  React.useEffect(() => {
+  useEffect(() => {
     dispatch(
       fetchData({ endpoint: partylist_get_req, dataType: "connection" })
     );
@@ -78,8 +80,9 @@ export default function Connection() {
   }));
 
   // handleDelete
-  let handleDelete = (val) => {
-    console.log("delete",val);
+  let handleDelete = (id) => {
+    console.log("delete",id);
+    dispatch(deleteData({ endpoint: partylist_delete_req, id, dataType: "connection" }));
   };
 
   // handleUpdate

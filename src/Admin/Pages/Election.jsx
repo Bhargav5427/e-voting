@@ -69,9 +69,10 @@ const Election = () => {
   }));
 
   const handleDelete = (id) => {
-    dispatch(
-      deleteData({ endpoint: election_delete_req, id, dataType: "election" })
-    );
+    console.log(id);
+    // dispatch(
+    //   deleteData({ endpoint: election_delete_req, id, dataType: "election" })
+    // );
   };
 
   const handleUpdate = () => {

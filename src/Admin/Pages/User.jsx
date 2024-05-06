@@ -36,7 +36,6 @@ const User = () => {
 
   let dispatch = useDispatch();
   const handleSubmit = (formData) => {
-    console.log(formData);
     dispatch(
       postData({
         payload: formData,
@@ -51,7 +50,6 @@ const User = () => {
   }, []);
 
   let data = useSelector((state) => state.admin.user);
-  console.log(data, "respons data");
 
   const columns = [
     {
@@ -82,14 +80,10 @@ const User = () => {
     address: user.address,
   }));
   // handleDelete
-  let handleDelete = () => {
-    console.log("delete");
-  };
+  let handleDelete = () => {};
 
   // handleUpdate
-  let handleUpdate = () => {
-    console.log("Update");
-  };
+  let handleUpdate = () => {};
   return (
     <>
       <Grid

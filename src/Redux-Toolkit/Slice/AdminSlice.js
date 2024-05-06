@@ -7,11 +7,15 @@ const initialState = {
   party: [],
   election: [],
   connection: [],
+  vote: [],
   isLoading: false,
   isError: false,
 };
 
 // Api Calls
+
+
+// FETCH DATA
 export const fetchData = createAsyncThunk(
   "fetchData",
   async ({ endpoint, dataType }) => {
@@ -24,30 +28,31 @@ export const fetchData = createAsyncThunk(
   }
 );
 
+
+// POST DATA
 export const postData = createAsyncThunk("postData", async (data) => {
   let { endpoint, payload, dataType } = data;
-  console.log(payload);
   try {
     const res = await axios.post(Base_url + endpoint, payload);
-    // console.log(res);
     return { data: res.data, dataType };
   } catch (err) {
     throw err;
   }
 });
 
+
+// DELETE DATA
 export const deleteData = createAsyncThunk("deleteData", async (data) => {
   let { endpoint, id, dataType } = data;
-  console.log(id);
   try {
     const res = await axios.delete(Base_url + endpoint + id);
-    console.log(res, "delete");
-
     return { data: id, dataType };
   } catch (err) {
     throw err;
   }
 });
+
+
 
 // Slice
 export const adminSlice = createSlice({
@@ -71,7 +76,6 @@ export const adminSlice = createSlice({
       .addCase(fetchData.fulfilled, (state, action) => {
         state.isLoading = false;
         const { data, dataType } = action.payload;
-        // console.log(data, "reducer");
         switch (dataType) {
           case "party":
             state.party = data;
@@ -85,10 +89,14 @@ export const adminSlice = createSlice({
           case "user":
             state.user = data;
             break;
+          case "vote":
+            state.vote = data;
+            break;
           default:
             break;
         }
       })
+
 
       // Post Meth
       .addCase(postData.pending, (state) => {
@@ -104,7 +112,7 @@ export const adminSlice = createSlice({
       .addCase(postData.fulfilled, (state, action) => {
         state.isLoading = false;
         const { dataType, data } = action.payload;
-        // console.log(data.data);
+        //
         switch (dataType) {
           case "party":
             state.party = state.party.concat(data.data);
@@ -118,11 +126,16 @@ export const adminSlice = createSlice({
           case "user":
             state.user = state.user.concat(data.data);
             break;
+          case "vote":
+            state.vote = state.vote.concat(data.data);
+            break;
           default:
             break;
         }
       })
 
+
+      // DELETE METH
       .addCase(deleteData.pending, (state) => {
         state.isLoading = true;
         state.isError = false;
@@ -136,8 +149,7 @@ export const adminSlice = createSlice({
       .addCase(deleteData.fulfilled, (state, action) => {
         state.isLoading = false;
         const { dataType, data } = action.payload;
-        console.log(data);
-        console.log(dataType);
+
         switch (dataType) {
           case "party":
             state.party = state.party.filter((item) => item._id != data);

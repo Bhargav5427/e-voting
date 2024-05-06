@@ -32,10 +32,12 @@ const Party = () => {
   const [open, setOpen] = React.useState(false);
 
   const data = useSelector((state) => state.admin.party);
-  console.log(data);
+  
   const isLoading = useSelector((state) => state.admin.isLoading);
   const error = useSelector((state) => state.admin.error);
 
+
+  // FETCH DATA
   useEffect(() => {
     dispatch(fetchData({ endpoint: party_get_req, dataType: "party" }));
   }, [dispatch]);
@@ -51,33 +53,27 @@ const Party = () => {
     return error;
   }
 
-const handleSubmit = (event) => {
-  event.preventDefault();
+  const handleSubmit = (event) => {
+    event.preventDefault();
 
-  const formData = new FormData();
-  formData.append("party_name", event.target.elements["party-name"].value);
-  formData.append("party_logo", event.target.elements["party-logo"].files[0]);
-  formData.append(
-    "short_code",
-    event.target.elements["party-short-code"].value
-  );
+    const formData = new FormData();
+    formData.append("party_name", event.target.elements["party-name"].value);
+    formData.append("party_logo", event.target.elements["party-logo"].files[0]);
+    formData.append(
+      "short_code",
+      event.target.elements["party-short-code"].value
+    );
 
-  const partyData = {
-    party_name: event.target.elements["party-name"].value,
-    party_logo: event.target.elements["party-logo"].files[0],
-    short_code: event.target.elements["party-short-code"].value,
+    dispatch(
+      postData({
+        payload: formData,
+        endpoint: party_post_req,
+        dataType: "party",
+      })
+    );
+
+    setOpen(false); 
   };
-
-  dispatch(
-    postData({
-      payload: partyData,
-      endpoint: party_post_req,
-      dataType: "party",
-    })
-  );
-
-  setOpen(false); // Close the modal after submission
-};
 
   // Atomic Table
   let columns = [
@@ -109,12 +105,11 @@ const handleSubmit = (event) => {
 
   // handleDelete
   const handleDelete = (id) => {
-    console.log(id);
-    dispatch(deleteData({ endpoint: party_delete_req, id, dataType: "party" }));
+    
   };
 
   const handleUpdate = () => {
-    console.log("Update");
+    
   };
 
   return (
