@@ -3,8 +3,8 @@ export let Base_url = "http://13.127.211.205:8000/v1/";
 
 // User
 export let user_post_req = "user/create";
-export let user_get_Req = "user/list";
-export let user_get_req = "user/finduser/";
+export let user_get_req = "user/list";
+export let user_get_req_id = "user/finduser/";
 export let user_delete_req = "user/delete/userid";
 
 //party

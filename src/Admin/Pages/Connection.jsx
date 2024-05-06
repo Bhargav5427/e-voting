@@ -1,7 +1,12 @@
 import * as React from "react";
 import DataTable from "../../Atoms/DataTable";
 import { Box, Button, Grid, ListItem } from "@mui/material";
-import ProgressBarCard from "../../components/ProgressBarCard";
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+} from "@mui/material";
 import { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchData, postData } from "../../Redux-Toolkit/Slice/AdminSlice";
@@ -41,7 +46,7 @@ export default function Connection() {
     dispatch(
       fetchData({ endpoint: partylist_get_req, dataType: "connection" })
     );
-  }, [Connection]);
+  }, []);
 
   let handleSubmit = () => {
     let finaldata = {
@@ -71,100 +76,10 @@ export default function Connection() {
     Partyname: Connection.party.party_name,
     id: Connection._id,
   }));
-  //   {
-  //     id: "ElectionName",
-  //     label: "Election Name",
-  //     minWidth: 170,
-  //     align: "center",
-  //   },
-  //   {
-  //     id: "date",
-  //     label: "date",
-  //     minWidth: 170,
-  //     align: "center",
-  //   },
-  // ];
-  // let rows = [
-  //   {
-  //     ElectionName: "India",
-  //     date: "27/34/2003",
-  //     PartySCode: "bjp",
-  //   },
-  //   {
-  //     ElectionName: "India",
-  //     date: "27/34/2003",
-  //     PartySCode: "bjp",
-  //   },
-  //   {
-  //     ElectionName: "India",
-  //     date: "27/34/2003",
-  //     PartySCode: "bjp",
-  //   },
-  //   {
-  //     ElectionName: "India",
-  //     date: "27/34/2003",
-  //     PartySCode: "bjp",
-  //   },
-  //   {
-  //     ElectionName: "India",
-  //     date: "27/34/2003",
-  //     PartySCode: "bjp",
-  //   },
-  //   {
-  //     ElectionName: "India",
-  //     date: "27/34/2003",
-  //     PartySCode: "bjp",
-  //   },
-  //   {
-  //     ElectionName: "India",
-  //     date: "27/34/2003",
-  //     PartySCode: "bjp",
-  //   },
-  //   {
-  //     ElectionName: "India",
-  //     date: "27/34/2003",
-  //     PartySCode: "bjp",
-  //   },
-  //   {
-  //     ElectionName: "India",
-  //     date: "27/34/2003",
-  //     PartySCode: "bjp",
-  //   },
-  //   {
-  //     ElectionName: "India",
-  //     date: "27/34/2003",
-  //     PartySCode: "bjp",
-  //   },
-  //   {
-  //     ElectionName: "India",
-  //     date: "27/34/2003",
-  //     PartySCode: "bjp",
-  //   },
-  //   {
-  //     ElectionName: "India",
-  //     date: "27/34/2003",
-  //     PartySCode: "bjp",
-  //   },
-  //   {
-  //     ElectionName: "India",
-  //     date: "27/34/2003",
-  //     PartySCode: "bjp",
-  //   },
-  //   {
-  //     ElectionName: "India",
-  //     date: "27/34/2003",
-  //     PartySCode: "bjp",
-  //   },
-  //   {
-  //     ElectionName: "India",
-  //     date: "27/34/2003",
-  //     PartySCode: "bjp",
-  //   },
-  // ];
 
   // handleDelete
-  let handleDelete = () => {
-    console.log("delete");
+  let handleDelete = (val) => {
+    console.log("delete",val);
   };
 
   // handleUpdate
@@ -193,50 +108,54 @@ export default function Connection() {
           </ListItem>
         </Grid>
         <Grid item xs={4} container direction="column">
-          <Box>
-            <label>Choose Party</label>
-            <select
-              labelId="demo-select-small-label"
-              id="demo-select-small"
-              label="Party"
-              name="party"
-              onChange={(event) => setParty(event.target.value)} // Update Party state on change
-            >
-              <option value="">
-                <em>None</em>
-              </option>
-              {Partydata?.map((val, ind) => (
-                <option key={ind} value={val._id}>
-                  {val.party_name}
-                </option>
-              ))}
-            </select>
+          <Box sx={{ marginBottom: 2 }}>
+            <FormControl fullWidth>
+              <InputLabel id="party-select-label">Choose Party</InputLabel>
+              <Select
+                labelId="party-select-label"
+                id="party-select"
+                value={Party}
+                label="Party"
+                onChange={(event) => setParty(event.target.value)}
+              >
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+                {Partydata?.map((val, ind) => (
+                  <MenuItem key={ind} value={val._id}>
+                    {val.party_name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Box>
-          <Box>
-            <label>Choose Election</label>
-            <select
-              labelId="demo-select-small-label"
-              id="demo-select-small"
-              label="Election"
-              name="election"
-              onChange={(event) => setElection(event.target.value)} // Update Election state on change
-            >
-              <option value="">
-                <em>None</em>
-              </option>
-              {Electiondata?.map((val, ind) => (
-                <option key={ind} value={val._id}>
-                  {val.election_name}
-                </option>
-              ))}
-            </select>
+          <Box sx={{ marginBottom: 2 }}>
+            <FormControl fullWidth>
+              <InputLabel id="election-select-label">
+                Choose Election
+              </InputLabel>
+              <Select
+                labelId="election-select-label"
+                id="election-select"
+                value={Election}
+                label="Election"
+                onChange={(event) => setElection(event.target.value)}
+              >
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+                {Electiondata?.map((val, ind) => (
+                  <MenuItem key={ind} value={val._id}>
+                    {val.election_name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Box>
-          <button onClick={handleSubmit}>Submit</button>
+          <Button variant="contained" onClick={handleSubmit}>
+            Submit
+          </Button>
         </Grid>
-
-        {/* <input type="text" ref={election} />
-        <input type="text" ref={party} />
-        <button onClick={handleSubmit}></button> */}
       </Grid>
     </>
   );

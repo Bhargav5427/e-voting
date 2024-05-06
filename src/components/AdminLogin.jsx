@@ -11,13 +11,13 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 
-function Login() {
+function AdminLogin() {
   let name = useRef();
   let password = useRef();
 
   let handleSubmit = async () => {
     let data = {
-      cardNo: name.current.value,
+      name: name.current.value,
       password: password.current.value,
     };
     if (name.current.value == "" || password.current.value == "") {
@@ -39,12 +39,12 @@ function Login() {
       password.current.value = "";
     } else if (data?.name !== "" || data?.password !== "") {
       let res = await axios
-        .post("http://13.127.211.205:8000/v1/login/user", data)
+        .post("http://13.127.211.205:8000/v1/login/admin", data)
         .catch((e) => console.log(e));
-        console.log(data, "deraaaa");
       if (res?.status == 200) {
-        localStorage.setItem('role', 'user'); 
-    
+
+        localStorage.setItem('role', 'admin');
+        
         const Toast = Swal.mixin({
           toast: true,
           position: "top",
@@ -60,7 +60,7 @@ function Login() {
           title: "Login Successfully",
         });
         setTimeout(() => {
-          window.location.href = "/home";
+          window.location.href = "/dashboard";
         }, 600);
 
         name.current.value = "";
@@ -85,10 +85,9 @@ function Login() {
       }
     }
   };
-
   
-  const handleAdminRole = () =>  {
-    window.location.href = "/adminlogin";
+  const handleUserRole = () =>  {
+    window.location.href = "/login";
   };
   return (
     <div className="container">
@@ -115,7 +114,7 @@ function Login() {
                   <LockOutlinedIcon />
                 </Avatar>
                 <Typography component="h1" variant="h5">
-                  User Sign in
+                  Admin Sign in
                 </Typography>
                 <div>
                   <TextField
@@ -147,12 +146,12 @@ function Login() {
                     Sign In
                   </Button>
                   <Button
-                    onClick={handleAdminRole}
+                    onClick={handleUserRole}
                     fullWidth
                     variant="contained"
                     sx={{ mt: 3, mb: 2 }}
                   >
-                    Admin Login
+                    User Login
                   </Button>
                 </div>
               </Box>
@@ -164,4 +163,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default AdminLogin;

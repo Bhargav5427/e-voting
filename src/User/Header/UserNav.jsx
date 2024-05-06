@@ -11,8 +11,9 @@ import {
     MenuItem
 } from "react-pro-sidebar";
 import { Link } from "react-router-dom";
+import { Logout } from "@mui/icons-material";
 
-const AdminNav = () => {
+const UserNav = () => {
     const [collapsed, setCollapsed] = useState(false);
 
     const handleCollapsedChange = () => {
@@ -24,14 +25,12 @@ const AdminNav = () => {
         localStorage.clear();
         window.location.href = "/";
     };
-
-
     return (
         <div>
             <Sidebar
                 style={{ height: "100%", position: "absolute", }}
                 collapsed={collapsed}
-                
+
             >
                 <main>
                     <Menu className="mb-5">
@@ -54,7 +53,7 @@ const AdminNav = () => {
                                         letterSpacing: "1px"
                                     }}
                                 >
-                                    ADMiN
+                                    USER
                                 </div>
                             </MenuItem>
                         )}
@@ -68,7 +67,7 @@ const AdminNav = () => {
                             <MenuItem
                                 icon={<MdDashboard />}
                                 className={window.location.pathname.includes("dashboard") ? "active" : ""}
-                               
+
                             >
                                 Dashboard
                             </MenuItem>
@@ -82,7 +81,7 @@ const AdminNav = () => {
                             <MenuItem
                                 icon={<FaPeopleGroup />}
                                 className={window.location.pathname.includes("party") ? "active" : ""}
-                               
+
                             >
                                 Party
                             </MenuItem>
@@ -96,7 +95,7 @@ const AdminNav = () => {
                             <MenuItem
                                 icon={<BsInboxesFill />}
                                 className={window.location.pathname.includes("election") ? "active" : ""}
-                               
+
                             >
                                 Election
                             </MenuItem>
@@ -110,7 +109,7 @@ const AdminNav = () => {
                             <MenuItem
                                 icon={<SiGitconnected />}
                                 className={window.location.pathname.includes("connection") ? "active" : ""}
-                               
+
                             >
                                 Connection
                             </MenuItem>
@@ -124,7 +123,7 @@ const AdminNav = () => {
                             <MenuItem
                                 icon={<FaUser />}
                                 className={window.location.pathname.includes("user") ? "active" : ""}
-                               
+
                             >
                                 User
                             </MenuItem>
@@ -143,4 +142,4 @@ const AdminNav = () => {
     );
 };
 
-export default AdminNav;
+export default UserNav;

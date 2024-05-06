@@ -82,6 +82,9 @@ export const adminSlice = createSlice({
           case "connection":
             state.connection = data;
             break;
+          case "user":
+            state.user = data;
+            break;
           default:
             break;
         }
@@ -111,6 +114,9 @@ export const adminSlice = createSlice({
             break;
           case "connection":
             state.connection = state.connection.concat(data.data);
+            break;
+          case "user":
+            state.user = state.user.concat(data.data);
             break;
           default:
             break;
@@ -143,6 +149,9 @@ export const adminSlice = createSlice({
             state.connection = state.connection.filter(
               (item) => item._id != data
             );
+            break;
+          case "user":
+            state.user = state.user.filter((item) => item._id != data);
             break;
           default:
             break;
