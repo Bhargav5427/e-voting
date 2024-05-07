@@ -1,8 +1,15 @@
-import { Box, Grid } from "@mui/material";
 import React, { useEffect } from "react";
-import IconButton from "@mui/material/IconButton";
-import SearchIcon from "@mui/icons-material/Search";
-import TextField from "@mui/material/TextField";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  deleteData,
+  fetchData,
+  postData,
+} from "../../Redux-Toolkit/Slice/AdminSlice";
+import {
+  party_delete_req,
+  party_get_req,
+  party_post_req,
+} from "../../Redux-Toolkit/Constant";
 import DataTable from "../../Atoms/DataTable";
 import AddButton from "../../Atoms/Button";
 import Button from "@mui/joy/Button";
@@ -10,49 +17,43 @@ import Modal from "@mui/joy/Modal";
 import ModalClose from "@mui/joy/ModalClose";
 import Typography from "@mui/joy/Typography";
 import Sheet from "@mui/joy/Sheet";
-import {
-  PostData,
-  deleteData,
-  fetchData,
-  postData,
-} from "../../Redux-Toolkit/Slice/AdminSlice";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  party_delete_req,
-  party_get_req,
-  party_post_req,
-} from "../../Redux-Toolkit/Constant";
+import { Grid, IconButton, TextField, Box } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
 import { Add } from "@mui/icons-material";
 
 const Party = () => {
-  let dispatch = useDispatch();
+  const dispatch = useDispatch();
+
   // Atomic Button
   const inputTitles = ["party_name", "short_code", "party_logo"];
   const inputTypes = ["text", "text", "file"];
   const [open, setOpen] = React.useState(false);
 
+  // Redux state selectors
   const data = useSelector((state) => state.admin.party);
-  
   const isLoading = useSelector((state) => state.admin.isLoading);
   const error = useSelector((state) => state.admin.error);
 
-
-  // FETCH DATA
+  // Fetch data on component mount
   useEffect(() => {
     dispatch(fetchData({ endpoint: party_get_req, dataType: "party" }));
   }, [dispatch]);
+
   useEffect(() => {
     dispatch(fetchData());
   }, [dispatch]);
 
+  // If loading, display loading indicator
   if (isLoading) {
     return "loading...";
   }
 
+  // If error, display error message
   if (error) {
     return error;
   }
 
+  // Function to handle form submission for adding party
   const handleSubmit = (event) => {
     event.preventDefault();
 
@@ -72,11 +73,11 @@ const Party = () => {
       })
     );
 
-    setOpen(false); 
+    setOpen(false);
   };
 
-  // Atomic Table
-  let columns = [
+  // Define columns for DataTable
+  const columns = [
     {
       id: "img",
       label: "Party Logo",
@@ -96,24 +97,28 @@ const Party = () => {
       align: "center",
     },
   ];
-  let rows = data?.map((party) => ({
-    id: party._id,
-    PartyName: party.party_name,
-    PartyLogo: party.party_logo,
-    PartySCode: party.short_code,
+
+  // Map data for DataTable rows, handle potential null data
+  const rows = data?.map((party) => ({
+    id: party?._id,
+    PartyName: party?.party_name || "",
+    PartyLogo: party?.party_logo || "",
+    PartySCode: party?.short_code || "",
   }));
 
-  // handleDelete
+  // Function to handle deletion of party
   const handleDelete = (id) => {
-    
+    dispatch(deleteData({ endpoint: party_delete_req, id, dataType: "party" }));
   };
 
+  // Dummy function for handling update (not implemented)
   const handleUpdate = () => {
-    
+    console.log("Update");
   };
 
   return (
     <>
+      {/* Search and Add buttons */}
       <Grid
         container
         direction="row"
@@ -204,6 +209,7 @@ const Party = () => {
         </div>
       </Grid>
       <Box mt={11}>
+        {/* DataTable */}
         <DataTable
           columns={columns}
           rows={rows}

@@ -16,32 +16,39 @@ import { Box, Grid, IconButton, TextField } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 
 const Election = () => {
+  // Input titles and types for AddButton component
   const inputTitles = ["election_name", "date"];
   const inputTypes = ["text", "date"];
 
+  // Redux state selectors
   const data = useSelector((state) => state.admin.election);
-  console.log(data);
   const isLoading = useSelector((state) => state.admin.isLoading);
   const error = useSelector((state) => state.admin.error);
 
+  // Redux dispatch
   const dispatch = useDispatch();
 
+  // Fetch election data on component mount
   useEffect(() => {
     dispatch(fetchData({ endpoint: election_get_req, dataType: "election" }));
-  }, []);
+  }, [dispatch]);
 
+  // Reload data if changes occur
   useEffect(() => {
     dispatch(fetchData());
   }, [dispatch]);
 
+  // If loading, display loading indicator
   if (isLoading) {
     return "Loading...";
   }
 
+  // If error, display error message
   if (error) {
     return error;
   }
 
+  // Function to handle form submission for adding election
   const handleSubmit = (formData) => {
     dispatch(
       postData({
@@ -52,6 +59,7 @@ const Election = () => {
     );
   };
 
+  // Define columns for DataTable
   const columns = [
     {
       id: "ElectionName",
@@ -62,25 +70,28 @@ const Election = () => {
     { id: "date", label: "Date", minWidth: 170, align: "center" },
   ];
 
+  // Map data for DataTable rows, handle potential null data
   const rows = data?.map((election) => ({
-    ElectionName: election.election_name,
-    date: election.date,
-    id: election._id,
+    ElectionName: election?.election_name || "",
+    date: election?.date || "",
+    id: election?._id || "",
   }));
 
+  // Function to handle deletion of election
   const handleDelete = (id) => {
-    console.log(id);
-    // dispatch(
-    //   deleteData({ endpoint: election_delete_req, id, dataType: "election" })
-    // );
+    dispatch(
+      deleteData({ endpoint: election_delete_req, id, dataType: "election" })
+    );
   };
 
+  // Dummy function for handling update (not implemented)
   const handleUpdate = () => {
     console.log("Update");
   };
 
   return (
     <>
+      {/* Search and Add buttons */}
       <Grid
         container
         direction="row"
@@ -107,6 +118,7 @@ const Election = () => {
           onSubmit={handleSubmit}
         />
       </Grid>
+      {/* DataTable */}
       <Box mt={11}>
         <DataTable
           columns={columns}

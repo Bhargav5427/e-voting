@@ -1,5 +1,5 @@
-import { Box, Grid } from "@mui/material";
 import React, { useEffect } from "react";
+import { Box, Grid } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
 import TextField from "@mui/material/TextField";
@@ -34,7 +34,9 @@ const User = () => {
     "password",
   ];
 
-  let dispatch = useDispatch();
+  const dispatch = useDispatch();
+
+  // Function to handle form submission for adding user
   const handleSubmit = (formData) => {
     dispatch(
       postData({
@@ -45,19 +47,17 @@ const User = () => {
     );
   };
 
+  // Fetch user data on component mount
   useEffect(() => {
     dispatch(fetchData({ endpoint: user_get_req, dataType: "user" }));
-  }, []);
+  }, [dispatch]);
 
-  let data = useSelector((state) => state.admin.user);
+  // Get user data from Redux store
+  const data = useSelector((state) => state.admin.user);
 
+  // Define columns for DataTable
   const columns = [
-    {
-      id: "cardNo",
-      label: "Election Name",
-      minWidth: 170,
-      align: "center",
-    },
+    { id: "cardNo", label: "Election Name", minWidth: 170, align: "center" },
     { id: "name", label: "Name", minWidth: 170, align: "center" },
     { id: "fatherName", label: "Father Name", minWidth: 170, align: "center" },
     { id: "sex", label: "Gender", minWidth: 170, align: "center" },
@@ -68,24 +68,26 @@ const User = () => {
     { id: "address", label: "Address", minWidth: 170, align: "center" },
   ];
 
+  // Map user data for DataTable rows, handle potential null data
   const rows = data?.map((user) => ({
-    cardNo: user.cardNo,
-    name: user.name,
-    fatherName: user.fatherName,
-    sex: user.sex,
-    dob: user.dob,
-    assemblyNoandName: user.assemblyNoandName,
-    partNoandName: user.partNoandName,
-    password: user.password,
-    address: user.address,
+    cardNo: user?.cardNo || "",
+    name: user?.name || "",
+    fatherName: user?.fatherName || "",
+    sex: user?.sex || "",
+    dob: user?.dob || "",
+    assemblyNoandName: user?.assemblyNoandName || "",
+    partNoandName: user?.partNoandName || "",
+    password: user?.password || "",
+    address: user?.address || "",
   }));
-  // handleDelete
-  let handleDelete = () => {};
 
-  // handleUpdate
-  let handleUpdate = () => {};
+  // Dummy function for handling deletion and update (not implemented)
+  const handleDelete = () => {};
+  const handleUpdate = () => {};
+
   return (
     <>
+      {/* Search and Add buttons */}
       <Grid
         container
         direction="row"
@@ -113,6 +115,7 @@ const User = () => {
         />
       </Grid>
       <Box mt={6}>
+        {/* DataTable */}
         <DataTable
           columns={columns}
           rows={rows}

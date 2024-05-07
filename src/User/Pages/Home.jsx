@@ -9,6 +9,7 @@ import {
   vote_get_req,
   vote_post_req,
 } from "../../Redux-Toolkit/Constant";
+import Swal from "sweetalert2";
 
 export default function Home() {
   let dispatch = useDispatch();
@@ -21,16 +22,15 @@ export default function Home() {
     dispatch(fetchData({ dataType: "vote", endpoint: vote_get_req }));
   }, []);
 
-
   // fetch Connection list
   let connectionData = useSelector((state) => state.admin.connection);
   let data = connectionData?.map((connection) => ({
-    id: connection._id,
-    election_name: connection.election.election_name,
-    party: connection.party.party_name,
-    partylogo: connection.party.party_logo,
+    id: connection?._id,
+    election_name: connection?.election?.election_name,
+    election: connection?.election?._id,
+    party: connection?.party?.party_name,
+    partylogo: connection?.party?.party_logo,
   }));
-
 
   // Get user Info
   const getUser = () => {
@@ -39,21 +39,41 @@ export default function Home() {
   };
   let user = getUser();
 
-
+  // post data
   // post data
   let finalData = (rowData) => {
+    console.log(rowData);
     let data = {
-      user: user._id,
-      party: rowData.id,
+      user: user?._id,
+      party: rowData?.id,
+      election: rowData?.election,
     };
+    console.log(data);
     dispatch(
       postData({ dataType: "vote", endpoint: vote_post_req, payload: data })
     );
-    // window.location.reload();
-    // localStorage.clear();
-    // window.location.href = "/";
-  };
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top",
+      showConfirmButton: false,
+      timer: 1000,
+      didOpen: (toast) => {
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
+      },
+    });
+    Toast.fire({
+      icon: "success",
+      title: "Your Vote submitted Successfully",
+    });
 
+    // Add a delay before reloading the location
+    setTimeout(() => {
+      window.location.reload();
+      localStorage.clear();
+      window.location.href = "/";
+    }, 1500); // Adjust the delay time as needed (in milliseconds)
+  };
 
   let voteData = useSelector((state) => state.admin.vote);
   console.log(voteData, "votedata");

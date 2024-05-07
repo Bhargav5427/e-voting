@@ -1,5 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
-import Card from "react-bootstrap/Card";
+import React, { useRef, useState } from "react";
 import Swal from "sweetalert2";
 import axios from "axios";
 import Avatar from "@mui/material/Avatar";
@@ -12,83 +11,84 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 
 function AdminLogin() {
-  let name = useRef();
-  let password = useRef();
+  // Refs for input fields
+  const nameRef = useRef(null);
+  const passwordRef = useRef(null);
 
-  let handleSubmit = async () => {
-    let data = {
-      name: name.current.value,
-      password: password.current.value,
+  // State to manage loading status
+  const [loading, setLoading] = useState(false);
+
+  // Function to handle form submission
+  const handleSubmit = async () => {
+    // Set loading state to true when form is submitted
+    setLoading(true);
+
+    // Get input values from refs
+    const data = {
+      name: nameRef.current.value,
+      password: passwordRef.current.value,
     };
-    if (name.current.value == "" || password.current.value == "") {
-      const Toast = Swal.mixin({
-        toast: true,
-        position: "top",
-        showConfirmButton: false,
-        timer: 1000,
-        didOpen: (toast) => {
-          toast.onmouseenter = Swal.stopTimer;
-          toast.onmouseleave = Swal.resumeTimer;
-        },
-      });
-      Toast.fire({
-        icon: "error",
-        title: "please complete all fields",
-      });
-      name.current.value = "";
-      password.current.value = "";
-    } else if (data?.name !== "" || data?.password !== "") {
-      let res = await axios
-        .post("http://13.127.211.205:8000/v1/login/admin", data)
-        .catch((e) => console.log(e));
-      if (res?.status == 200) {
 
-        localStorage.setItem('role', 'admin');
-        
-        const Toast = Swal.mixin({
-          toast: true,
-          position: "top",
-          showConfirmButton: false,
-          timer: 1000,
-          didOpen: (toast) => {
-            toast.onmouseenter = Swal.stopTimer;
-            toast.onmouseleave = Swal.resumeTimer;
-          },
-        });
-        Toast.fire({
+    // Validate input fields
+    if (!data.name || !data.password) {
+      setLoading(false); // Reset loading state
+      // Show error alert if any field is empty
+      Swal.fire({
+        icon: "error",
+        title: "Please complete all fields",
+      });
+      return;
+    }
+
+    try {
+      // Make POST request to login endpoint
+      const res = await axios.post(
+        "http://13.127.211.205:8000/v1/login/admin",
+        data
+      );
+
+      // Check response status
+      if (res.status === 200) {
+        // Store user role in localStorage
+        localStorage.setItem("role", "admin");
+        // Show success alert on successful login
+        Swal.fire({
           icon: "success",
           title: "Login Successfully",
+        }).then(() => {
+          // Redirect to dashboard after 600 milliseconds
+          setTimeout(() => {
+            window.location.href = "/dashboard";
+          }, 600);
         });
-        setTimeout(() => {
-          window.location.href = "/dashboard";
-        }, 600);
-
-        name.current.value = "";
-        password.current.value = "";
+        // Clear input fields after successful login
+        nameRef.current.value = "";
+        passwordRef.current.value = "";
       } else {
-        const Toast = Swal.mixin({
-          toast: true,
-          position: "top",
-          showConfirmButton: false,
-          timer: 1500,
-          didOpen: (toast) => {
-            toast.onmouseenter = Swal.stopTimer;
-            toast.onmouseleave = Swal.resumeTimer;
-          },
-        });
-        Toast.fire({
+        // Show error alert if login fails
+        setLoading(false); // Reset loading state
+        Swal.fire({
           icon: "error",
-          title: "please check name and Password",
+          title: "Please check name and password",
         });
-        name.current.value = "";
-        password.current.value = "";
       }
+    } catch (error) {
+      // Show error alert if request fails
+      setLoading(false); // Reset loading state
+      console.error(error);
+      Swal.fire({
+        icon: "error",
+        title: "Please check name and password",
+      });
     }
   };
-  
-  const handleUserRole = () =>  {
+
+  // Function to handle user role redirection
+  const handleUserRole = () => {
+    // Redirect to user login page
     window.location.href = "/login";
   };
+
   return (
     <div className="container">
       <div className="row">
@@ -97,7 +97,7 @@ function AdminLogin() {
         </div>
         <div className="right-side col-6">
           <div
-            className=" d-flex justify-content-center align-items-center"
+            className="d-flex justify-content-center align-items-center"
             style={{ height: "100vh" }}
           >
             <Container component="main" maxWidth="xs">
@@ -122,8 +122,8 @@ function AdminLogin() {
                     required
                     fullWidth
                     id="name"
-                    inputRef={name}
-                    label="name"
+                    inputRef={nameRef}
+                    label="Name"
                     name="name"
                     autoFocus
                   />
@@ -132,7 +132,7 @@ function AdminLogin() {
                     required
                     fullWidth
                     name="password"
-                    inputRef={password}
+                    inputRef={passwordRef}
                     label="Password"
                     type="password"
                     id="password"
@@ -142,14 +142,17 @@ function AdminLogin() {
                     fullWidth
                     variant="contained"
                     sx={{ mt: 3, mb: 2 }}
+                    disabled={loading} // Disable button when loading
                   >
-                    Sign In
+                    {loading ? "Signing In..." : "Sign In"}{" "}
+                    {/* Show loading text when signing in */}
                   </Button>
                   <Button
                     onClick={handleUserRole}
                     fullWidth
                     variant="contained"
                     sx={{ mt: 3, mb: 2 }}
+                    disabled={loading} // Disable button when loading
                   >
                     User Login
                   </Button>

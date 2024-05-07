@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import axios from "axios";
 import Avatar from "@mui/material/Avatar";
@@ -9,18 +9,44 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchData } from "../Redux-Toolkit/Slice/AdminSlice";
+import { vote_get_req } from "../Redux-Toolkit/Constant";
 
 function Login() {
+  // Refs for input fields
   let name = useRef();
   let password = useRef();
 
-  // CHECKING LOGIN INFO
+  // State to manage loading status
+  const [loading, setLoading] = useState(false);
+
+  // Redux dispatch
+  let dispatch = useDispatch();
+
+  // Fetch vote data from server
+  useEffect(() => {
+    dispatch(fetchData({ dataType: "vote", endpoint: vote_get_req }));
+  }, []);
+
+  // Select vote data from Redux store
+  let voteData = useSelector((state) => state.admin.vote);
+
+  // Function to handle form submission
   let handleSubmit = async () => {
+    // Set loading state to true when form is submitted
+    setLoading(true);
+
+    // Get input values from refs
     let data = {
       cardNo: name.current.value,
       password: password.current.value,
     };
-    if (name.current.value == "" || password.current.value == "") {
+
+    // Validate input fields
+    if (name.current.value === "" || password.current.value === "") {
+      setLoading(false); // Reset loading state
+      // Show error alert if any field is empty
       const Toast = Swal.mixin({
         toast: true,
         position: "top",
@@ -33,21 +59,90 @@ function Login() {
       });
       Toast.fire({
         icon: "error",
-        title: "please complete all fields",
+        title: "Please complete all fields",
       });
       name.current.value = "";
       password.current.value = "";
-    } else if (data?.name !== "" || data?.password !== "") {
-      let res = await axios
-        .post("http://13.127.211.205:8000/v1/login/user", data)
-        .catch((e) => console.log(e));
-      if (res?.status == 200) {
+    } else {
+      try {
+        // Make POST request to user login endpoint
+        let res = await axios.post(
+          "http://13.127.211.205:8000/v1/login/user",
+          data
+        );
+        if (res.status === 200) {
+          if (!voteData.find((val) => val.user?.cardNo === data.cardNo)) {
+            // Set login info to localStorage
+            localStorage.setItem("role", "user");
+            localStorage.setItem("userData", JSON.stringify(res.data.data));
 
-        // SET LOGIN INFO TO LOCALSTORAGE
-        localStorage.setItem("role", "user");
-        localStorage.setItem("userData", JSON.stringify(res.data.data));
+            // Show success alert on successful login
+            const Toast = Swal.mixin({
+              toast: true,
+              position: "top",
+              showConfirmButton: false,
+              timer: 1000,
+              didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+              },
+            });
+            Toast.fire({
+              icon: "success",
+              title: "Login Successfully",
+            });
 
-        // SWEET ALERT
+            // Redirect to home page after 600 milliseconds
+            setTimeout(() => {
+              window.location.href = "/home";
+            }, 600);
+
+            // Clear input fields after successful login
+            name.current.value = "";
+            password.current.value = "";
+          } else {
+            // Show error alert if user has already voted
+            setLoading(false); // Reset loading state
+            const Toast = Swal.mixin({
+              toast: true,
+              position: "top",
+              showConfirmButton: false,
+              timer: 1000,
+              didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+              },
+            });
+            Toast.fire({
+              icon: "error",
+              title: "You have already voted",
+            });
+            name.current.value = "";
+            password.current.value = "";
+          }
+        } else {
+          // Show error alert if login fails
+          setLoading(false); // Reset loading state
+          const Toast = Swal.mixin({
+            toast: true,
+            position: "top",
+            showConfirmButton: false,
+            timer: 1000,
+            didOpen: (toast) => {
+              toast.onmouseenter = Swal.stopTimer;
+              toast.onmouseleave = Swal.resumeTimer;
+            },
+          });
+          Toast.fire({
+            icon: "error",
+            title: "Please check VoterID and password",
+          });
+          name.current.value = "";
+          password.current.value = "";
+        }
+      } catch (error) {
+        // Show error alert if request fails
+        setLoading(false); // Reset loading state
         const Toast = Swal.mixin({
           toast: true,
           position: "top",
@@ -59,41 +154,20 @@ function Login() {
           },
         });
         Toast.fire({
-          icon: "success",
-          title: "Login Successfully",
-        });
-        setTimeout(() => {
-          window.location.href = "/home";
-        }, 600);
-
-        name.current.value = "";
-        password.current.value = "";
-      } else {
-
-        // SWEET ALERT
-        const Toast = Swal.mixin({
-          toast: true,
-          position: "top",
-          showConfirmButton: false,
-          timer: 1500,
-          didOpen: (toast) => {
-            toast.onmouseenter = Swal.stopTimer;
-            toast.onmouseleave = Swal.resumeTimer;
-          },
-        });
-        Toast.fire({
           icon: "error",
-          title: "please check name and Password",
+          title: "Please check VoterID and password",
         });
-        name.current.value = "";
-        password.current.value = "";
+        console.error(error);
       }
     }
   };
 
+  // Function to handle admin role redirection
   const handleAdminRole = () => {
+    // Redirect to admin login page
     window.location.href = "/adminlogin";
   };
+
   return (
     <div className="container">
       <div className="row">
@@ -102,7 +176,7 @@ function Login() {
         </div>
         <div className="right-side col-6">
           <div
-            className=" d-flex justify-content-center align-items-center"
+            className="d-flex justify-content-center align-items-center"
             style={{ height: "100vh" }}
           >
             <Container component="main" maxWidth="xs">
@@ -128,7 +202,7 @@ function Login() {
                     fullWidth
                     id="name"
                     inputRef={name}
-                    label="name"
+                    label="VoterID"
                     name="name"
                     autoFocus
                   />
@@ -147,8 +221,10 @@ function Login() {
                     fullWidth
                     variant="contained"
                     sx={{ mt: 3, mb: 2 }}
+                    disabled={loading} // Disable button when loading
                   >
-                    Sign In
+                    {loading ? "Signing In..." : "Sign In"}{" "}
+                    {/* Show loading text when signing in */}
                   </Button>
                   <Button
                     onClick={handleAdminRole}
