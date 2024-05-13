@@ -78,3 +78,8 @@ p{
 .css-78trlr-MuiButtonBase-root-MuiIconButton-root{
     padding: 0 !important;
 }
+
+::selection {
+  color: rgb(0, 0, 0) !important;
+  background: rgba(255, 0, 72, 0.342) !important;
+}

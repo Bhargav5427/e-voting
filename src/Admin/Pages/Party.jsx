@@ -1,15 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   deleteData,
   fetchData,
   postData,
 } from "../../Redux-Toolkit/Slice/AdminSlice";
-import {
-  party_delete_req,
-  party_get_req,
-  party_post_req,
-} from "../../Redux-Toolkit/Constant";
+import { party_delete_req, party_post_req } from "../../Redux-Toolkit/Constant";
 import DataTable from "../../Atoms/DataTable";
 import AddButton from "../../Atoms/Button";
 import Button from "@mui/joy/Button";
@@ -23,25 +19,14 @@ import { Add } from "@mui/icons-material";
 
 const Party = () => {
   const dispatch = useDispatch();
+  const [searchTerm, setSearchTerm] = useState("");
 
-  // Atomic Button
-  const inputTitles = ["party_name", "short_code", "party_logo"];
-  const inputTypes = ["text", "text", "file"];
   const [open, setOpen] = React.useState(false);
 
   // Redux state selectors
   const data = useSelector((state) => state.admin.party);
   const isLoading = useSelector((state) => state.admin.isLoading);
   const error = useSelector((state) => state.admin.error);
-
-  // Fetch data on component mount
-  useEffect(() => {
-    dispatch(fetchData({ endpoint: party_get_req, dataType: "party" }));
-  }, [dispatch]);
-
-  useEffect(() => {
-    dispatch(fetchData());
-  }, [dispatch]);
 
   // If loading, display loading indicator
   if (isLoading) {
@@ -99,10 +84,14 @@ const Party = () => {
   ];
 
   // Map data for DataTable rows, handle potential null data
-  const rows = data?.map((party) => ({
+  const filteredData = data.filter((party) =>
+    party.party_name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const rows = filteredData.map((party) => ({
     id: party?._id,
     PartyName: party?.party_name || "",
-    PartyLogo: party?.party_logo || "",
+    img: party?.party_logo || "",
     PartySCode: party?.short_code || "",
   }));
 
@@ -125,7 +114,11 @@ const Party = () => {
         justifyContent="space-between"
         alignItems="center"
       >
-        <form>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+          }}
+        >
           <IconButton type="submit" aria-label="search">
             <SearchIcon style={{ fill: "blue" }} />
           </IconButton>
@@ -136,6 +129,8 @@ const Party = () => {
             variant="outlined"
             placeholder="Search..."
             size="small"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
         </form>
         <div>
@@ -179,28 +174,35 @@ const Party = () => {
                 Add Party
               </Typography>
               <form onSubmit={handleSubmit}>
+                <label>Enter Party name</label>
                 <TextField
+                  className="mb-3"
                   id="party-name"
                   label="Party Name"
                   variant="outlined"
                   fullWidth
                   required
                 />
+                <label>Enter Party Logo</label>
                 <input
+                  className="mb-3 p-3 w-100 rounded"
+                  style={{ border: "1px solid #c1c2c3" }}
                   type="file"
                   id="party-logo"
                   name="partyLogo"
                   accept="image/*"
                   required
                 />
+                <label>Enter Party Short-code</label>
                 <TextField
+                  className="mb-3"
                   id="party-short-code"
                   label="Party Short Code"
                   variant="outlined"
                   fullWidth
                   required
                 />
-                <Button type="submit" variant="contained" color="primary">
+                <Button className="border btn btn-outline-dark" type="submit" variant="contained" color="primary">
                   Submit
                 </Button>
               </form>

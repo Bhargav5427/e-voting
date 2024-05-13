@@ -6,8 +6,8 @@ import TextField from "@mui/material/TextField";
 import DataTable from "../../Atoms/DataTable";
 import AddButton from "../../Atoms/Button";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchData, postData } from "../../Redux-Toolkit/Slice/AdminSlice";
-import { user_get_req, user_post_req } from "../../Redux-Toolkit/Constant";
+import { postData } from "../../Redux-Toolkit/Slice/AdminSlice";
+import { user_post_req } from "../../Redux-Toolkit/Constant";
 
 const User = () => {
   // Atomic Button
@@ -46,11 +46,6 @@ const User = () => {
       })
     );
   };
-
-  // Fetch user data on component mount
-  useEffect(() => {
-    dispatch(fetchData({ endpoint: user_get_req, dataType: "user" }));
-  }, [dispatch]);
 
   // Get user data from Redux store
   const data = useSelector((state) => state.admin.user);

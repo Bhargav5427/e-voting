@@ -21,23 +21,19 @@ export default function DataTable({
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
-  // Handle page change in pagination
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
 
-  // Handle rows per page change in pagination
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
 
-  // Handle delete action
   const handleDelete = (id) => {
     onDelete(id);
   };
 
-  // Handle update action
   const handleUpdate = (id) => {
     onUpdate(id);
   };
@@ -50,7 +46,6 @@ export default function DataTable({
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
-              {/* Render table header */}
               {columns.map((column, index) => (
                 <TableCell
                   key={index}
@@ -60,12 +55,10 @@ export default function DataTable({
                   {column.label}
                 </TableCell>
               ))}
-              {/* Action column */}
-              <TableCell>Action</TableCell>
+              {onDelete && onUpdate && <TableCell>Action</TableCell>}
             </TableRow>
           </TableHead>
           <TableBody>
-            {/* Render table rows */}
             {rows
               ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row, rowIndex) => (
@@ -74,44 +67,39 @@ export default function DataTable({
                     const value = row[column.id];
                     return (
                       <TableCell key={colIndex} align={column.align}>
-                        {/* Render table cell */}
-                        {column.format && typeof value === "number" ? (
-                          column.format(value)
-                        ) : column.id === "img" ? (
-                          // Render image if column id is "img"
+                        {column.id === "img" ? (
                           <img
                             src={value}
-                            alt="Image"
-                            style={{ width: "100px", height: "100px" }}
+                            alt="Party Logo"
+                            style={{ width: "50px" }}
                           />
                         ) : (
-                          // Otherwise, render text value
                           value
                         )}
                       </TableCell>
                     );
                   })}
-                  {/* Action buttons */}
-                  <TableCell>
-                    <IconButton
-                      aria-label="edit"
-                      onClick={() => handleUpdate(row.id)} // Pass id to handleUpdate
-                    >
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton
-                      aria-label="delete"
-                      onClick={() => handleDelete(row.id)} // Pass id to handleDelete
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </TableCell>
+                  {onDelete && onUpdate && (
+                    <TableCell>
+                      <IconButton
+                        aria-label="edit"
+                        onClick={() => handleUpdate(row.id)}
+                      >
+                        <EditIcon />
+                      </IconButton>
+                      <IconButton
+                        aria-label="delete"
+                        onClick={() => handleDelete(row.id)}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </TableCell>
+                  )}
                 </TableRow>
               ))}
           </TableBody>
         </Table>
       </TableContainer>
-      {/* Table pagination */}
       <TablePagination
         rowsPerPageOptions={[5, 10, 25, 100]}
         component="div"

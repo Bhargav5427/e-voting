@@ -11,81 +11,67 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 
 function AdminLogin() {
-  // Refs for input fields
   const nameRef = useRef(null);
   const passwordRef = useRef(null);
-
-  // State to manage loading status
   const [loading, setLoading] = useState(false);
 
-  // Function to handle form submission
   const handleSubmit = async () => {
-    // Set loading state to true when form is submitted
     setLoading(true);
-
-    // Get input values from refs
     const data = {
       name: nameRef.current.value,
       password: passwordRef.current.value,
     };
 
-    // Validate input fields
     if (!data.name || !data.password) {
-      setLoading(false); // Reset loading state
-      // Show error alert if any field is empty
-      Swal.fire({
-        icon: "error",
-        title: "Please complete all fields",
-      });
+      setLoading(false);
+      showAlert("error", "Please complete all fields");
       return;
     }
 
     try {
-      // Make POST request to login endpoint
       const res = await axios.post(
         "http://13.127.211.205:8000/v1/login/admin",
         data
       );
-
-      // Check response status
       if (res.status === 200) {
-        // Store user role in localStorage
         localStorage.setItem("role", "admin");
-        // Show success alert on successful login
-        Swal.fire({
-          icon: "success",
-          title: "Login Successfully",
-        }).then(() => {
-          // Redirect to dashboard after 600 milliseconds
+        showAlert("success", "Login Successfully", () => {
           setTimeout(() => {
             window.location.href = "/dashboard";
           }, 600);
         });
-        // Clear input fields after successful login
         nameRef.current.value = "";
         passwordRef.current.value = "";
       } else {
-        // Show error alert if login fails
-        setLoading(false); // Reset loading state
-        Swal.fire({
-          icon: "error",
-          title: "Please check name and password",
-        });
+        showAlert("error", "Please check name and password");
       }
     } catch (error) {
-      // Show error alert if request fails
-      setLoading(false); // Reset loading state
+      showAlert("error", "Please check name and password");
       console.error(error);
-      Swal.fire({
-        icon: "error",
-        title: "Please check name and password",
-      });
     }
+    setLoading(false);
   };
 
-  // Function to handle user role redirection
+  const showAlert = (icon, title, callback) => {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top",
+      showConfirmButton: false,
+      timer: 1000,
+      didOpen: (toast) => {
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
+      },
+    });
+    Toast.fire({
+      icon: icon,
+      title: title,
+    }).then(() => {
+      if (callback) callback();
+    });
+  };
+
   const handleUserRole = () => {
-    // Redirect to user login page
     window.location.href = "/login";
   };
 
@@ -142,17 +128,16 @@ function AdminLogin() {
                     fullWidth
                     variant="contained"
                     sx={{ mt: 3, mb: 2 }}
-                    disabled={loading} // Disable button when loading
+                    disabled={loading}
                   >
-                    {loading ? "Signing In..." : "Sign In"}{" "}
-                    {/* Show loading text when signing in */}
+                    {loading ? "Signing In..." : "Sign In"}
                   </Button>
                   <Button
                     onClick={handleUserRole}
                     fullWidth
                     variant="contained"
                     sx={{ mt: 3, mb: 2 }}
-                    disabled={loading} // Disable button when loading
+                    disabled={loading}
                   >
                     User Login
                   </Button>

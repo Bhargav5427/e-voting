@@ -1,24 +1,48 @@
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import Login from "./components/Login";
+import AdminLogin from "./components/AdminLogin";
 import Dashboard from "./Admin/Pages/Dashboard";
 import Election from "./Admin/Pages/Election";
 import Party from "./Admin/Pages/Party";
 import User from "./Admin/Pages/User";
 import AdminNav from "./Admin/Header/AdminNav";
-import Connection from "./Admin/Pages/Connection";
-import AdminLogin from "./components/AdminLogin";
 import UserNav from "./User/Header/UserNav";
 import Home from "./User/Pages/Home";
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { fetchData } from "./Redux-Toolkit/Slice/AdminSlice";
+import {
+  election_get_req,
+  party_get_req,
+  partylist_get_req,
+  user_get_req,
+  vote_get_req,
+} from "./Redux-Toolkit/Constant";
+import Connection from "./Admin/Pages/Connection";
 
-const getRole = () => {
-  const role = localStorage.getItem("role");
-  return role;
-};
+const getRole = () => localStorage.getItem("role");
 
 const App = () => {
   const role = getRole();
   const location = useLocation();
+  const dispatch = useDispatch();
 
+  useEffect(() => {
+    const dataTypes = ["party", "election", "connection", "user", "vote"];
+    const endpoints = [
+      party_get_req,
+      election_get_req,
+      partylist_get_req,
+      user_get_req,
+      vote_get_req,
+    ];
+    dataTypes.forEach((dataType, index) => {
+      dispatch(fetchData({ dataType, endpoint: endpoints[index] }));
+    });
+  }, []);
+
+  const isAdmin = role === "admin";
+  const isUser = role === "user"; 
   const isLoginPage = location.pathname === "/";
 
   if (!role || role === "") {
@@ -31,60 +55,40 @@ const App = () => {
     );
   }
 
-  if (role === "admin") {
-    return (
-      <>
-        <AdminNav />
-        <div
-          className="container"
-          style={{
-            maxWidth: "1150px",
-            padding: "30px 40px 40px",
-            height: "100vh",
-            marginLeft: "310px",
-          }}
-        >
-          <Routes>
-            <Route path="*" element={<Dashboard to="/" replace />} />
-            <Route path="/dashboard" exact element={<Dashboard />} />
-            <Route path="/party" exact element={<Party />} />
-            <Route path="/election" exact element={<Election />} />
-            <Route path="/connection" exact element={<Connection />} />
-            <Route path="/user" exact element={<User />} />
-          </Routes>
-        </div>
-      </>
-    );
-  }
-
-  if (role === "user") {
-    return (
-      <>
-        <UserNav />
-        <div
-          className="container"
-          style={{
-            maxWidth: "1150px",
-            padding: "30px 40px 40px",
-            height: "100vh",
-            marginLeft: "310px",
-          }}
-        >
-          {/* You can add a sidebar or navigation here for users */}
-          <Routes>
-            <Route path="/home" element={<Home />} />
-            <Route path="/profile" element={<Home />} />
-          </Routes>
-        </div>
-      </>
-    );
-  }
-
   return (
-    <Routes>
-      <Route path="/" element={<Login />} />
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+    <>
+      {isAdmin && <AdminNav />}
+      {isUser && <UserNav />}
+      <div
+        className="container"
+        style={{
+          maxWidth: "1150px",
+          padding: "30px 40px 40px",
+          height: "100vh",
+          marginLeft: '310px',
+        }}
+      >
+        <Routes>
+          {isAdmin && (
+            <>
+              <Route path="*" element={<Dashboard />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/party" element={<Party />} />
+              <Route path="/election" element={<Election />} />
+              <Route path="/connection" element={<Connection />} />
+              <Route path="/user" element={<User />} />
+            </>
+          )}
+          {isUser && (
+            <>
+              <Route path="/home" element={<Home />} />
+              <Route path="/profile" element={<Home />} />
+            </>
+          )}
+        </Routes>
+      </div>
+    </>
   );
 };
+
 export default App;

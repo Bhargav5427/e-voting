@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   deleteData,
@@ -28,15 +28,8 @@ const Election = () => {
   // Redux dispatch
   const dispatch = useDispatch();
 
-  // Fetch election data on component mount
-  useEffect(() => {
-    dispatch(fetchData({ endpoint: election_get_req, dataType: "election" }));
-  }, [dispatch]);
-
-  // Reload data if changes occur
-  useEffect(() => {
-    dispatch(fetchData());
-  }, [dispatch]);
+  // Search term state
+  const [searchTerm, setSearchTerm] = useState("");
 
   // If loading, display loading indicator
   if (isLoading) {
@@ -70,8 +63,13 @@ const Election = () => {
     { id: "date", label: "Date", minWidth: 170, align: "center" },
   ];
 
+  // Filter data based on search term
+  const filteredData = data.filter((election) =>
+    election.election_name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   // Map data for DataTable rows, handle potential null data
-  const rows = data?.map((election) => ({
+  const rows = filteredData.map((election) => ({
     ElectionName: election?.election_name || "",
     date: election?.date || "",
     id: election?._id || "",
@@ -98,7 +96,7 @@ const Election = () => {
         justifyContent="space-between"
         alignItems="center"
       >
-        <form>
+        <form onSubmit={(e) => e.preventDefault()}>
           <IconButton type="submit" aria-label="search">
             <SearchIcon style={{ fill: "blue" }} />
           </IconButton>
@@ -109,6 +107,8 @@ const Election = () => {
             variant="outlined"
             placeholder="Search..."
             size="small"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
         </form>
         <AddButton

@@ -161,6 +161,7 @@ function Login() {
       }
     }
   };
+  console.log(process.env.REACT_APP_BASE_URL,"qwertyu");
 
   // Function to handle admin role redirection
   const handleAdminRole = () => {

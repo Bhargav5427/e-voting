@@ -5,7 +5,7 @@ import { MdDashboard } from "react-icons/md";
 import { RxExit } from "react-icons/rx";
 import { FaUser, FaPeopleGroup } from "react-icons/fa6";
 import { SiGitconnected } from "react-icons/si";
-import { BsInboxesFill } from "react-icons/bs";
+import { IoHammer } from "react-icons/io5";
 import { Sidebar, Menu, MenuItem } from "react-pro-sidebar";
 import { Link } from "react-router-dom";
 
@@ -56,7 +56,10 @@ const AdminNav = () => {
           </Menu>
 
           <Menu>
-            <Link to="/dashboard" style={{ textDecoration: "none",color:"black" }}>
+            <Link
+              to="/dashboard"
+              style={{ textDecoration: "none", color: "black" }}
+            >
               <MenuItem
                 icon={<MdDashboard />}
                 className={
@@ -68,7 +71,10 @@ const AdminNav = () => {
             </Link>
           </Menu>
           <Menu>
-            <Link to="/party" style={{ textDecoration: "none",color:"black" }}>
+            <Link
+              to="/party"
+              style={{ textDecoration: "none", color: "black" }}
+            >
               <MenuItem
                 icon={<FaPeopleGroup />}
                 className={
@@ -80,9 +86,12 @@ const AdminNav = () => {
             </Link>
           </Menu>
           <Menu>
-            <Link to="/election" style={{ textDecoration: "none",color:"black" }}>
+            <Link
+              to="/election"
+              style={{ textDecoration: "none", color: "black" }}
+            >
               <MenuItem
-                icon={<BsInboxesFill />}
+                icon={<IoHammer />}
                 className={
                   window.location.pathname.includes("election") ? "active" : ""
                 }
@@ -92,7 +101,10 @@ const AdminNav = () => {
             </Link>
           </Menu>
           <Menu>
-            <Link to="/connection" style={{ textDecoration: "none",color:"black" }}>
+            <Link
+              to="/connection"
+              style={{ textDecoration: "none", color: "black" }}
+            >
               <MenuItem
                 icon={<SiGitconnected />}
                 className={
@@ -106,7 +118,7 @@ const AdminNav = () => {
             </Link>
           </Menu>
           <Menu>
-            <Link to="/user" style={{ textDecoration: "none",color:"black" }}>
+            <Link to="/user" style={{ textDecoration: "none", color: "black" }}>
               <MenuItem
                 icon={<FaUser />}
                 className={

@@ -20,21 +20,20 @@ const UserNav = () => {
     setCollapsed(!collapsed);
   };
 
-
-//   get User Info
+  //   get User Info
   const getUser = () => {
     const userData = JSON.parse(localStorage.getItem("userData"));
     return userData;
   };
   let userData = getUser();
 
-//   logOut Meth
+  //   logOut Meth
   const handleLogout = (event) => {
     window.location.reload();
     localStorage.clear();
     window.location.href = "/";
   };
-  
+
   return (
     <div>
       <Sidebar

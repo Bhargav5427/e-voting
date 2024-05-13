@@ -45,12 +45,9 @@ const AddButton = ({ title, inputTitles, inputTypes, onSubmit }) => {
   return (
     <>
       {/* Button to open modal */}
-      <Button
-        variant="outlined"
-        color="neutral"
-        startIcon={<AddIcon />}
-        onClick={() => setOpen(true)}
-      >
+
+      <Button variant="outlined" color="neutral" onClick={() => setOpen(true)}>
+        <AddIcon />
         {title}
       </Button>
       {/* Modal for adding data */}

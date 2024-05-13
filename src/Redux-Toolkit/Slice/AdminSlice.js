@@ -2,7 +2,6 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { Base_url } from "../Constant";
 
-// Define initial state
 const initialState = {
   user: [],
   party: [],
@@ -13,14 +12,14 @@ const initialState = {
   isError: false,
 };
 
-// Async thunks for API calls
+// API Calls
 
-// Fetch data
+// FETCH DATA
 export const fetchData = createAsyncThunk(
   "fetchData",
   async ({ endpoint, dataType }) => {
     try {
-      const res = await axios.get(Base_url + endpoint);
+      const res = await axios.get(process.env.REACT_APP_BASE_URL + endpoint);
       return { data: res.data.data, dataType };
     } catch (err) {
       throw err;
@@ -28,45 +27,47 @@ export const fetchData = createAsyncThunk(
   }
 );
 
-// Post data
+// POST DATA
 export const postData = createAsyncThunk("postData", async (data) => {
-  const { endpoint, payload, dataType } = data;
+  let { endpoint, payload, dataType } = data;
   try {
-    const res = await axios.post(Base_url + endpoint, payload);
+    const res = await axios.post(process.env.REACT_APP_BASE_URL + endpoint, payload);
+    console.log("🚀 ~ postData ~ res:", res)
     return { data: res.data, dataType };
   } catch (err) {
     throw err;
   }
 });
 
-// Delete data
+// DELETE DATA
 export const deleteData = createAsyncThunk("deleteData", async (data) => {
-  const { endpoint, id, dataType } = data;
+  let { endpoint, id, dataType } = data;
   try {
-    await axios.delete(Base_url + endpoint + id);
+    const res = await axios.delete(process.env.REACT_APP_BASE_URL + endpoint + id);
     return { data: id, dataType };
   } catch (err) {
     throw err;
   }
 });
 
-// Admin slice
+// Slice
 export const adminSlice = createSlice({
-  name: "admin",
+  name: "admin", 
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // Handle pending, rejected, and fulfilled actions for fetch data
-      .addMatcher(fetchData.pending, (state) => {
+
+      // Fetch Meth
+      .addCase(fetchData.pending, (state) => {
         state.isLoading = true;
         state.isError = false;
       })
-      .addMatcher(fetchData.rejected, (state, action) => {
+      .addCase(fetchData.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = action.error.message || [];
       })
-      .addMatcher(fetchData.fulfilled, (state, action) => {
+      .addCase(fetchData.fulfilled, (state, action) => {
         state.isLoading = false;
         const { data, dataType } = action.payload;
         switch (dataType) {
@@ -89,20 +90,22 @@ export const adminSlice = createSlice({
             break;
         }
       })
-      // Handle pending, rejected, and fulfilled actions for post data
-      .addMatcher(postData.pending, (state) => {
+
+      // Post Meth
+      .addCase(postData.pending, (state) => {
         state.isLoading = true;
         state.isError = false;
       })
-      .addMatcher(postData.rejected, (state, action) => {
+      .addCase(postData.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = action.error
           ? action.error.message
           : "An error occurred";
       })
-      .addMatcher(postData.fulfilled, (state, action) => {
+      .addCase(postData.fulfilled, (state, action) => {
         state.isLoading = false;
         const { dataType, data } = action.payload;
+        //
         switch (dataType) {
           case "party":
             state.party = state.party.concat(data.data);
@@ -123,20 +126,22 @@ export const adminSlice = createSlice({
             break;
         }
       })
-      // Handle pending, rejected, and fulfilled actions for delete data
-      .addMatcher(deleteData.pending, (state) => {
+
+      // DELETE METH
+      .addCase(deleteData.pending, (state) => {
         state.isLoading = true;
         state.isError = false;
       })
-      .addMatcher(deleteData.rejected, (state, action) => {
+      .addCase(deleteData.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = action.error
           ? action.error.message
           : "An error occurred";
       })
-      .addMatcher(deleteData.fulfilled, (state, action) => {
+      .addCase(deleteData.fulfilled, (state, action) => {
         state.isLoading = false;
         const { dataType, data } = action.payload;
+
         switch (dataType) {
           case "party":
             state.party = state.party.filter((item) => item._id !== data);

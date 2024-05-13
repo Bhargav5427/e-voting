@@ -44,16 +44,20 @@ const TablewithRadio = ({ data, Output }) => {
               <TableCell style={{ textAlign: "center" }}>Select</TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
+          <TableBody>0
             {data.map((row) => (
               <TableRow
                 key={row.id}
                 onClick={() => handleRowSelect(row.id, row)}
                 hover
-                selected={selectedRow === row.id}
+                selected={selectedRow === row.party_id}
               >
                 <TableCell style={{ textAlign: "center" }}>
-                  <img src={row.partylogo} alt="Loading..." />
+                  <img
+                    style={{ width: "50px" }}
+                    src={row.partylogo}
+                    alt="Loading..."
+                  />
                 </TableCell>
                 <TableCell style={{ textAlign: "center" }}>
                   {row.election_name}
