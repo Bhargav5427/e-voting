@@ -11,7 +11,6 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchData } from "../Redux-Toolkit/Slice/AdminSlice";
-import { vote_get_req } from "../Redux-Toolkit/Constant";
 
 function Login() {
   // Refs for input fields
@@ -26,7 +25,12 @@ function Login() {
 
   // Fetch vote data from server
   useEffect(() => {
-    dispatch(fetchData({ dataType: "vote", endpoint: vote_get_req }));
+    dispatch(
+      fetchData({
+        dataType: "vote",
+        endpoint: process.env.REACT_APP_VOTE_GET_REQ,
+      })
+    );
   }, []);
 
   // Select vote data from Redux store
@@ -67,7 +71,7 @@ function Login() {
       try {
         // Make POST request to user login endpoint
         let res = await axios.post(
-          "http://13.127.211.205:8000/v1/login/user",
+          process.env.REACT_APP_BASE_URL + "login/user",
           data
         );
         if (res.status === 200) {
@@ -161,7 +165,7 @@ function Login() {
       }
     }
   };
-  console.log(process.env.REACT_APP_BASE_URL,"qwertyu");
+  console.log(process.env.REACT_APP_BASE_URL, "qwertyu");
 
   // Function to handle admin role redirection
   const handleAdminRole = () => {

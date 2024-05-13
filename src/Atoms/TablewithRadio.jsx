@@ -44,7 +44,7 @@ const TablewithRadio = ({ data, Output }) => {
               <TableCell style={{ textAlign: "center" }}>Select</TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>0
+          <TableBody>
             {data.map((row) => (
               <TableRow
                 key={row.id}

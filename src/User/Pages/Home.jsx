@@ -2,24 +2,26 @@ import React, { useEffect } from "react";
 import TablewithRadio from "../../Atoms/TablewithRadio";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchData, postData } from "../../Redux-Toolkit/Slice/AdminSlice";
-import {
-  partylist_get_req,
-  vote_get_req,
-  vote_post_req,
-} from "../../Redux-Toolkit/Constant";
 import Swal from "sweetalert2";
 
 const Home = () => {
   const dispatch = useDispatch();
   const connectionData = useSelector((state) => state.admin.connection);
-  console.log(connectionData);
   const user = JSON.parse(localStorage.getItem("userData"));
 
   useEffect(() => {
     dispatch(
-      fetchData({ endpoint: partylist_get_req, dataType: "connection" })
+      fetchData({
+        endpoint: process.env.REACT_APP_PARTYLIST_GET_REQ,
+        dataType: "connection",
+      })
     );
-    dispatch(fetchData({ dataType: "vote", endpoint: vote_get_req }));
+    dispatch(
+      fetchData({
+        dataType: "vote",
+        endpoint: process.env.REACT_APP_VOTE_GET_REQ,
+      })
+    );
   }, []);
 
   const finalData = (rowData) => {
@@ -29,7 +31,11 @@ const Home = () => {
       election: rowData?.election,
     };
     dispatch(
-      postData({ dataType: "vote", endpoint: vote_post_req, payload: data })
+      postData({
+        dataType: "vote",
+        endpoint: process.env.REACT_APP_VOTE_POST_REQ,
+        payload: data,
+      })
     );
 
     Swal.fire({

@@ -5,9 +5,7 @@ import {
   fetchData,
   postData,
 } from "../../Redux-Toolkit/Slice/AdminSlice";
-import { party_delete_req, party_post_req } from "../../Redux-Toolkit/Constant";
 import DataTable from "../../Atoms/DataTable";
-import AddButton from "../../Atoms/Button";
 import Button from "@mui/joy/Button";
 import Modal from "@mui/joy/Modal";
 import ModalClose from "@mui/joy/ModalClose";
@@ -16,6 +14,7 @@ import Sheet from "@mui/joy/Sheet";
 import { Grid, IconButton, TextField, Box } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { Add } from "@mui/icons-material";
+import Swal from "sweetalert2";
 
 const Party = () => {
   const dispatch = useDispatch();
@@ -26,7 +25,8 @@ const Party = () => {
   // Redux state selectors
   const data = useSelector((state) => state.admin.party);
   const isLoading = useSelector((state) => state.admin.isLoading);
-  const error = useSelector((state) => state.admin.error);
+  const error = useSelector((state) => state.admin.isError);
+  console.log("🚀 ~ Party ~ error:", error);
 
   // If loading, display loading indicator
   if (isLoading) {
@@ -53,10 +53,25 @@ const Party = () => {
     dispatch(
       postData({
         payload: formData,
-        endpoint: party_post_req,
+        endpoint: process.env.REACT_APP_PARTY_POST_REQ,
         dataType: "party",
       })
     );
+
+    // const Toast = Swal.mixin({
+    //   toast: true,
+    //   position: "top",
+    //   showConfirmButton: false,
+    //   timer: 1300,
+    //   didOpen: (toast) => {
+    //     toast.onmouseenter = Swal.stopTimer;
+    //     toast.onmouseleave = Swal.resumeTimer;
+    //   },
+    // });
+    // Toast.fire({
+    //   icon: "success",
+    //   title: "party added successfully",
+    // });
 
     setOpen(false);
   };
@@ -97,7 +112,27 @@ const Party = () => {
 
   // Function to handle deletion of party
   const handleDelete = (id) => {
-    dispatch(deleteData({ endpoint: party_delete_req, id, dataType: "party" }));
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top",
+      showConfirmButton: false,
+      timer: 1300,
+      didOpen: (toast) => {
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
+      },
+    });
+    Toast.fire({
+      icon: "success",
+      title: "party deleted successfully",
+    });
+    dispatch(
+      deleteData({
+        endpoint: process.env.REACT_APP_PARTY_DELETE_REQ,
+        id,
+        dataType: "party",
+      })
+    );
   };
 
   // Dummy function for handling update (not implemented)
@@ -202,7 +237,12 @@ const Party = () => {
                   fullWidth
                   required
                 />
-                <Button className="border btn btn-outline-dark" type="submit" variant="contained" color="primary">
+                <Button
+                  className="border btn btn-outline-dark"
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                >
                   Submit
                 </Button>
               </form>

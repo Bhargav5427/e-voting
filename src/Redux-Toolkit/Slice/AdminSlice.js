@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { Base_url } from "../Constant";
 
 const initialState = {
   user: [],
@@ -32,10 +31,12 @@ export const postData = createAsyncThunk("postData", async (data) => {
   let { endpoint, payload, dataType } = data;
   try {
     const res = await axios.post(process.env.REACT_APP_BASE_URL + endpoint, payload);
-    console.log("🚀 ~ postData ~ res:", res)
+    console.log("🚀 ~ postData ~ res:", res);
     return { data: res.data, dataType };
   } catch (err) {
-    throw err;
+    // Extract status code from the error object
+    const statusCode = err.response ? err.response.status : 'Unknown';
+    throw statusCode;
   }
 });
 
@@ -46,13 +47,16 @@ export const deleteData = createAsyncThunk("deleteData", async (data) => {
     const res = await axios.delete(process.env.REACT_APP_BASE_URL + endpoint + id);
     return { data: id, dataType };
   } catch (err) {
-    throw err;
+    // Extract status code from the error object
+    const statusCode = err.response ? err.response.status : 'Unknown';
+    throw statusCode;
   }
 });
 
+
 // Slice
 export const adminSlice = createSlice({
-  name: "admin", 
+  name: "admin",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -156,6 +160,9 @@ export const adminSlice = createSlice({
             break;
           case "user":
             state.user = state.user.filter((item) => item._id !== data);
+            break;
+          case "vote":
+            state.vote = state.vote.filter((item) => item._id !== data);
             break;
           default:
             break;

@@ -1,20 +1,16 @@
 import * as React from "react";
 import { Grid, ListItem, Box } from "@mui/joy";
 import DataTable from "../../Atoms/DataTable";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { FaPeopleGroup, FaUser } from "react-icons/fa6";
 import { BsInboxesFill } from "react-icons/bs";
 import ProgressBarCard from "../../components/ProgressBarCard";
 
 const Dashboard = () => {
   // Redux hooks
-  const partydata = useSelector((state) => state.admin.party);
-  const electiondata = useSelector((state) => state.admin.election);
-  const userdata = useSelector((state) => state.admin.user);
-  const votedata = useSelector((state) => state.admin.vote);
-  const isLoading = useSelector((state) => state.admin.isLoading);
-  const error = useSelector((state) => state.admin.error);
-
+  const { party, election, user, vote, isLoading, error } = useSelector(
+    (state) => state.admin
+  );
   function calculatePartyVotes(data) {
     const partyVotes = {};
     // Filter out entries where the user has voted for a party
@@ -33,8 +29,7 @@ const Dashboard = () => {
     return partyVotes;
   }
 
-  const partyVotes = calculatePartyVotes(votedata);
-  console.log("Party Votes:", partyVotes);
+  const partyVotes = calculatePartyVotes(vote);
 
   // If loading, display loading indicator
   if (isLoading) {
@@ -68,7 +63,7 @@ const Dashboard = () => {
     },
   ];
 
-  const rows = partydata?.map((party) => ({
+  const rows = party?.map((party) => ({
     id: party._id,
     img: party.party_logo,
     party: party.party_name,
@@ -92,10 +87,10 @@ const Dashboard = () => {
         <Grid xs={4}>
           <ListItem>
             <ProgressBarCard
-              progressValue={partydata.length * 2}
+              progressValue={party.length * 2}
               icon={<FaPeopleGroup />}
               title="TOTAL PARTY"
-              amount={partydata.length}
+              amount={party.length}
             />
           </ListItem>
         </Grid>
@@ -103,9 +98,9 @@ const Dashboard = () => {
           <ListItem>
             <ProgressBarCard
               icon={<BsInboxesFill />}
-              progressValue={electiondata.length * 2}
+              progressValue={election.length * 2}
               title="TOTAL ELECTION"
-              amount={electiondata.length}
+              amount={election.length}
             />
           </ListItem>
         </Grid>
@@ -113,9 +108,9 @@ const Dashboard = () => {
           <ListItem>
             <ProgressBarCard
               icon={<FaUser />}
-              progressValue={userdata.length * 2}
+              progressValue={user.length * 2}
               title="TOTAL VOTER"
-              amount={userdata.length}
+              amount={user.length}
             />
           </ListItem>
         </Grid>

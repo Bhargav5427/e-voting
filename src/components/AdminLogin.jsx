@@ -30,7 +30,7 @@ function AdminLogin() {
 
     try {
       const res = await axios.post(
-        "http://13.127.211.205:8000/v1/login/admin",
+        process.env.REACT_APP_BASE_URL + "login/admin",
         data
       );
       if (res.status === 200) {

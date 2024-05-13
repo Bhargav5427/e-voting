@@ -1,7 +1,7 @@
 import "../../index.css";
 import React, { useState } from "react";
 import { HiArrowsPointingIn, HiArrowsPointingOut } from "react-icons/hi2";
-import { MdDashboard } from "react-icons/md";
+import { MdDashboard, MdHowToVote } from "react-icons/md";
 import { RxExit } from "react-icons/rx";
 import { FaUser, FaPeopleGroup } from "react-icons/fa6";
 import { SiGitconnected } from "react-icons/si";
@@ -126,6 +126,21 @@ const AdminNav = () => {
                 }
               >
                 User
+              </MenuItem>
+            </Link>
+          </Menu>
+          <Menu>
+            <Link
+              to="/votes"
+              style={{ textDecoration: "none", color: "black" }}
+            >
+              <MenuItem
+                icon={<MdHowToVote />}
+                className={
+                  window.location.pathname.includes("votes") ? "active" : ""
+                }
+              >
+                Votes
               </MenuItem>
             </Link>
           </Menu>

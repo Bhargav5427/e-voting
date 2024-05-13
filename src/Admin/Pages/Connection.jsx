@@ -18,13 +18,7 @@ import {
   postData,
   deleteData,
 } from "../../Redux-Toolkit/Slice/AdminSlice";
-import {
-  election_get_req,
-  party_get_req,
-  partylist_get_req,
-  partylist_post_req,
-  partylist_delete_req,
-} from "../../Redux-Toolkit/Constant";
+import Swal from "sweetalert2";
 
 export default function Connection() {
   // Refs for dropdowns
@@ -46,9 +40,9 @@ export default function Connection() {
 
   // Fetch data on component mount
   useEffect(() => {
-    fetchDataWithLoading(election_get_req, "election");
-    fetchDataWithLoading(party_get_req, "party");
-    fetchDataWithLoading(partylist_get_req, "connection");
+    fetchDataWithLoading(process.env.REACT_APP_ELECTION_GET_REQ, "election");
+    fetchDataWithLoading(process.env.REACT_APP_PARTY_GET_REQ, "party");
+    fetchDataWithLoading(process.env.REACT_APP_PARTYLIST_GET_REQ, "connection");
   }, []);
 
   // Function to fetch data with loading indicator
@@ -59,6 +53,21 @@ export default function Connection() {
 
   // Function to handle form submission
   const handleSubmit = () => {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top",
+      showConfirmButton: false,
+      timer: 1300,
+      didOpen: (toast) => {
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
+      },
+    });
+    Toast.fire({
+      icon: "success",
+      title: "Connection added successfully",
+    });
+
     const finaldata = {
       election: Election,
       party: Party,
@@ -67,7 +76,7 @@ export default function Connection() {
     dispatch(
       postData({
         payload: finaldata,
-        endpoint: partylist_post_req,
+        endpoint: process.env.REACT_APP_PARTYLIST_POST_REQ,
         dataType: "connection",
       })
     ).then(() => setLoading(false));
@@ -98,9 +107,28 @@ export default function Connection() {
 
   // Function to handle delete action
   const handleDelete = (id) => {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top",
+      showConfirmButton: false,
+      timer: 1300,
+      didOpen: (toast) => {
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
+      },
+    });
+    Toast.fire({
+      icon: "success",
+      title: "Connection deleted successfully",
+    });
+
     setLoading(true);
     dispatch(
-      deleteData({ endpoint: partylist_delete_req, id, dataType: "connection" })
+      deleteData({
+        endpoint: process.env.REACT_APP_PARTYLIST_DELETE_REQ,
+        id,
+        dataType: "connection",
+      })
     ).then(() => setLoading(false));
   };
 

@@ -5,15 +5,12 @@ import {
   fetchData,
   postData,
 } from "../../Redux-Toolkit/Slice/AdminSlice";
-import {
-  election_delete_req,
-  election_get_req,
-  election_post_req,
-} from "../../Redux-Toolkit/Constant";
+
 import DataTable from "../../Atoms/DataTable";
 import AddButton from "../../Atoms/Button";
 import { Box, Grid, IconButton, TextField } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+import Swal from "sweetalert2";
 
 const Election = () => {
   // Input titles and types for AddButton component
@@ -22,8 +19,7 @@ const Election = () => {
 
   // Redux state selectors
   const data = useSelector((state) => state.admin.election);
-  const isLoading = useSelector((state) => state.admin.isLoading);
-  const error = useSelector((state) => state.admin.error);
+  const {isLoading,error} = useSelector((state) => state.admin);
 
   // Redux dispatch
   const dispatch = useDispatch();
@@ -43,10 +39,25 @@ const Election = () => {
 
   // Function to handle form submission for adding election
   const handleSubmit = (formData) => {
+     const Toast = Swal.mixin({
+       toast: true,
+       position: "top",
+       showConfirmButton: false,
+       timer: 1300,
+       didOpen: (toast) => {
+         toast.onmouseenter = Swal.stopTimer;
+         toast.onmouseleave = Swal.resumeTimer;
+       },
+     });
+     Toast.fire({
+       icon: "success",
+       title: "Election added successfully",
+     });
+
     dispatch(
       postData({
         payload: formData,
-        endpoint: election_post_req,
+        endpoint: process.env.REACT_APP_ELECTION_POST_REQ,
         dataType: "election",
       })
     );
@@ -77,8 +88,27 @@ const Election = () => {
 
   // Function to handle deletion of election
   const handleDelete = (id) => {
+     const Toast = Swal.mixin({
+       toast: true,
+       position: "top",
+       showConfirmButton: false,
+       timer: 1300,
+       didOpen: (toast) => {
+         toast.onmouseenter = Swal.stopTimer;
+         toast.onmouseleave = Swal.resumeTimer;
+       },
+     });
+     Toast.fire({
+       icon: "success",
+       title: "Election deleted successfully",
+     });
+
     dispatch(
-      deleteData({ endpoint: election_delete_req, id, dataType: "election" })
+      deleteData({
+        endpoint: process.env.REACT_APP_ELECTION_DELETE_REQ,
+        id,
+        dataType: "election",
+      })
     );
   };
 

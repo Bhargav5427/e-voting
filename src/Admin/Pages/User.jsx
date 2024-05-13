@@ -7,7 +7,6 @@ import DataTable from "../../Atoms/DataTable";
 import AddButton from "../../Atoms/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { postData } from "../../Redux-Toolkit/Slice/AdminSlice";
-import { user_post_req } from "../../Redux-Toolkit/Constant";
 
 const User = () => {
   // Atomic Button
@@ -41,7 +40,7 @@ const User = () => {
     dispatch(
       postData({
         payload: formData,
-        endpoint: user_post_req,
+        endpoint: process.env.REACT_APP_USER_POST_REQ,
         dataType: "user",
       })
     );
@@ -52,7 +51,7 @@ const User = () => {
 
   // Define columns for DataTable
   const columns = [
-    { id: "cardNo", label: "Election Name", minWidth: 170, align: "center" },
+    { id: "cardNo", label: "CardNo", minWidth: 170, align: "center" },
     { id: "name", label: "Name", minWidth: 170, align: "center" },
     { id: "fatherName", label: "Father Name", minWidth: 170, align: "center" },
     { id: "sex", label: "Gender", minWidth: 170, align: "center" },
@@ -65,6 +64,7 @@ const User = () => {
 
   // Map user data for DataTable rows, handle potential null data
   const rows = data?.map((user) => ({
+    id: user?._id,
     cardNo: user?.cardNo || "",
     name: user?.name || "",
     fatherName: user?.fatherName || "",
@@ -77,7 +77,9 @@ const User = () => {
   }));
 
   // Dummy function for handling deletion and update (not implemented)
-  const handleDelete = () => {};
+  const handleDelete = (id) => {
+    console.log(id);
+  };
   const handleUpdate = () => {};
 
   return (

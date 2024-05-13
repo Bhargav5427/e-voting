@@ -11,14 +11,8 @@ import Home from "./User/Pages/Home";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { fetchData } from "./Redux-Toolkit/Slice/AdminSlice";
-import {
-  election_get_req,
-  party_get_req,
-  partylist_get_req,
-  user_get_req,
-  vote_get_req,
-} from "./Redux-Toolkit/Constant";
 import Connection from "./Admin/Pages/Connection";
+import Votes from "./Admin/Pages/Votes";
 
 const getRole = () => localStorage.getItem("role");
 
@@ -30,11 +24,11 @@ const App = () => {
   useEffect(() => {
     const dataTypes = ["party", "election", "connection", "user", "vote"];
     const endpoints = [
-      party_get_req,
-      election_get_req,
-      partylist_get_req,
-      user_get_req,
-      vote_get_req,
+      process.env.REACT_APP_PARTY_GET_REQ,
+      process.env.REACT_APP_ELECTION_GET_REQ,
+      process.env.REACT_APP_PARTYLIST_GET_REQ,
+      process.env.REACT_APP_USER_GET_REQ,
+      process.env.REACT_APP_VOTE_GET_REQ,
     ];
     dataTypes.forEach((dataType, index) => {
       dispatch(fetchData({ dataType, endpoint: endpoints[index] }));
@@ -42,7 +36,7 @@ const App = () => {
   }, []);
 
   const isAdmin = role === "admin";
-  const isUser = role === "user"; 
+  const isUser = role === "user";
   const isLoginPage = location.pathname === "/";
 
   if (!role || role === "") {
@@ -65,7 +59,7 @@ const App = () => {
           maxWidth: "1150px",
           padding: "30px 40px 40px",
           height: "100vh",
-          marginLeft: '310px',
+          marginLeft: "310px",
         }}
       >
         <Routes>
@@ -77,6 +71,7 @@ const App = () => {
               <Route path="/election" element={<Election />} />
               <Route path="/connection" element={<Connection />} />
               <Route path="/user" element={<User />} />
+              <Route path="/votes" element={<Votes />} />
             </>
           )}
           {isUser && (
