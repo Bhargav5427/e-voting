@@ -59,8 +59,8 @@ function Login() {
       showAlert("error", "Please complete all fields");
       nameRef.current.value = "";
       passwordRef.current.value = "";
-      setInputsDisabled(false); // Enable input fields if validation fails
-      setButtonDisabled(false); // Enable login button if validation fails
+      setInputsDisabled(false); 
+      setButtonDisabled(false); 
       return;
     }
 
