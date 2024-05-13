@@ -14,14 +14,17 @@ import { fetchData } from "../Redux-Toolkit/Slice/AdminSlice";
 
 function Login() {
   // Refs for input fields
-  let name = useRef();
-  let password = useRef();
+  const nameRef = useRef(null);
+  const passwordRef = useRef(null);
 
   // State to manage loading status
   const [loading, setLoading] = useState(false);
+  // State to manage input fields and button disabled status
+  const [inputsDisabled, setInputsDisabled] = useState(false);
+  const [buttonDisabled, setButtonDisabled] = useState(false);
 
   // Redux dispatch
-  let dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   // Fetch vote data from server
   useEffect(() => {
@@ -34,143 +37,101 @@ function Login() {
   }, []);
 
   // Select vote data from Redux store
-  let voteData = useSelector((state) => state.admin.vote);
+  const voteData = useSelector((state) => state.admin.vote);
 
   // Function to handle form submission
-  let handleSubmit = async () => {
+  const handleSubmit = async () => {
     // Set loading state to true when form is submitted
     setLoading(true);
+    setInputsDisabled(true); // Disable input fields when the login button is clicked
+    setButtonDisabled(true); // Disable login button when the login button is clicked
 
     // Get input values from refs
-    let data = {
-      cardNo: name.current.value,
-      password: password.current.value,
+    const data = {
+      cardNo: nameRef.current.value,
+      password: passwordRef.current.value,
     };
 
     // Validate input fields
-    if (name.current.value === "" || password.current.value === "") {
+    if (!data.cardNo || !data.password) {
       setLoading(false); // Reset loading state
       // Show error alert if any field is empty
-      const Toast = Swal.mixin({
-        toast: true,
-        position: "top",
-        showConfirmButton: false,
-        timer: 1000,
-        didOpen: (toast) => {
-          toast.onmouseenter = Swal.stopTimer;
-          toast.onmouseleave = Swal.resumeTimer;
-        },
-      });
-      Toast.fire({
-        icon: "error",
-        title: "Please complete all fields",
-      });
-      name.current.value = "";
-      password.current.value = "";
-    } else {
-      try {
-        // Make POST request to user login endpoint
-        let res = await axios.post(
-          process.env.REACT_APP_BASE_URL + "login/user",
-          data
-        );
-        if (res.status === 200) {
-          if (!voteData.find((val) => val.user?.cardNo === data.cardNo)) {
-            // Set login info to localStorage
-            localStorage.setItem("role", "user");
-            localStorage.setItem("userData", JSON.stringify(res.data.data));
+      showAlert("error", "Please complete all fields");
+      nameRef.current.value = "";
+      passwordRef.current.value = "";
+      setInputsDisabled(false); // Enable input fields if validation fails
+      setButtonDisabled(false); // Enable login button if validation fails
+      return;
+    }
 
-            // Show success alert on successful login
-            const Toast = Swal.mixin({
-              toast: true,
-              position: "top",
-              showConfirmButton: false,
-              timer: 1000,
-              didOpen: (toast) => {
-                toast.onmouseenter = Swal.stopTimer;
-                toast.onmouseleave = Swal.resumeTimer;
-              },
-            });
-            Toast.fire({
-              icon: "success",
-              title: "Login Successfully",
-            });
+    try {
+      // Make POST request to user login endpoint
+      const res = await axios.post(
+        process.env.REACT_APP_BASE_URL + "login/user",
+        data
+      );
+      if (res.status === 200) {
+        if (!voteData.find((val) => val.user?.cardNo === data.cardNo)) {
+          // Set login info to localStorage
+          localStorage.setItem("role", "user");
+          localStorage.setItem("userData", JSON.stringify(res.data.data));
 
-            // Redirect to home page after 600 milliseconds
+          // Show success alert on successful login
+          showAlert("success", "Login Successfully", () => {
             setTimeout(() => {
               window.location.href = "/home";
             }, 600);
+          });
 
-            // Clear input fields after successful login
-            name.current.value = "";
-            password.current.value = "";
-          } else {
-            // Show error alert if user has already voted
-            setLoading(false); // Reset loading state
-            const Toast = Swal.mixin({
-              toast: true,
-              position: "top",
-              showConfirmButton: false,
-              timer: 1000,
-              didOpen: (toast) => {
-                toast.onmouseenter = Swal.stopTimer;
-                toast.onmouseleave = Swal.resumeTimer;
-              },
-            });
-            Toast.fire({
-              icon: "error",
-              title: "You have already voted",
-            });
-            name.current.value = "";
-            password.current.value = "";
-          }
+          // Clear input fields after successful login
+          nameRef.current.value = "";
+          passwordRef.current.value = "";
         } else {
-          // Show error alert if login fails
-          setLoading(false); // Reset loading state
-          const Toast = Swal.mixin({
-            toast: true,
-            position: "top",
-            showConfirmButton: false,
-            timer: 1000,
-            didOpen: (toast) => {
-              toast.onmouseenter = Swal.stopTimer;
-              toast.onmouseleave = Swal.resumeTimer;
-            },
-          });
-          Toast.fire({
-            icon: "error",
-            title: "Please check VoterID and password",
-          });
-          name.current.value = "";
-          password.current.value = "";
+          // Show error alert if user has already voted
+          showAlert("error", "You have already voted");
+          nameRef.current.value = "";
+          passwordRef.current.value = "";
         }
-      } catch (error) {
-        // Show error alert if request fails
-        setLoading(false); // Reset loading state
-        const Toast = Swal.mixin({
-          toast: true,
-          position: "top",
-          showConfirmButton: false,
-          timer: 1000,
-          didOpen: (toast) => {
-            toast.onmouseenter = Swal.stopTimer;
-            toast.onmouseleave = Swal.resumeTimer;
-          },
-        });
-        Toast.fire({
-          icon: "error",
-          title: "Please check VoterID and password",
-        });
-        console.error(error);
+      } else {
+        // Show error alert if login fails
+        showAlert("error", "Please check VoterID and password");
+        nameRef.current.value = "";
+        passwordRef.current.value = "";
       }
+    } catch (error) {
+      // Show error alert if request fails
+      showAlert("error", "Please check VoterID and password");
+      console.error(error);
     }
+    setLoading(false);
+    setInputsDisabled(false); // Enable input fields after login attempt
+    setButtonDisabled(false); // Enable login button after login attempt
   };
-  console.log(process.env.REACT_APP_BASE_URL, "qwertyu");
 
   // Function to handle admin role redirection
   const handleAdminRole = () => {
     // Redirect to admin login page
     window.location.href = "/adminlogin";
+  };
+
+  // Function to show alert
+  const showAlert = (icon, title, callback) => {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top",
+      showConfirmButton: false,
+      timer: 1000,
+      didOpen: (toast) => {
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
+      },
+    });
+    Toast.fire({
+      icon: icon,
+      title: title,
+    }).then(() => {
+      if (callback) callback();
+    });
   };
 
   return (
@@ -206,27 +167,29 @@ function Login() {
                     required
                     fullWidth
                     id="name"
-                    inputRef={name}
+                    inputRef={nameRef}
                     label="VoterID"
                     name="name"
                     autoFocus
+                    disabled={inputsDisabled} // Set disabled attribute based on state variable
                   />
                   <TextField
                     margin="normal"
                     required
                     fullWidth
                     name="password"
-                    inputRef={password}
+                    inputRef={passwordRef}
                     label="Password"
                     type="password"
                     id="password"
+                    disabled={inputsDisabled} // Set disabled attribute based on state variable
                   />
                   <Button
                     onClick={handleSubmit}
                     fullWidth
                     variant="contained"
                     sx={{ mt: 3, mb: 2 }}
-                    disabled={loading} // Disable button when loading
+                    disabled={loading || buttonDisabled} // Disable button when loading or disabled
                   >
                     {loading ? "Signing In..." : "Sign In"}{" "}
                     {/* Show loading text when signing in */}

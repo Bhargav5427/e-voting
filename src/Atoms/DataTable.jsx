@@ -64,7 +64,7 @@ export default function DataTable({
               .map((row, rowIndex) => (
                 <TableRow hover role="checkbox" tabIndex={-1} key={rowIndex}>
                   {columns.map((column, colIndex) => {
-                    const value = row[column.id];
+                    const value = row[column.id] ?? null; // Use nullish coalescing operator to provide default value
                     return (
                       <TableCell key={colIndex} align={column.align}>
                         {column.id === "img" ? (

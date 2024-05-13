@@ -14,9 +14,12 @@ function AdminLogin() {
   const nameRef = useRef(null);
   const passwordRef = useRef(null);
   const [loading, setLoading] = useState(false);
+  const [inputsDisabled, setInputsDisabled] = useState(false); // State variable to track input fields disabled state
 
   const handleSubmit = async () => {
     setLoading(true);
+    setInputsDisabled(true); // Disable input fields when the login button is clicked
+
     const data = {
       name: nameRef.current.value,
       password: passwordRef.current.value,
@@ -25,6 +28,7 @@ function AdminLogin() {
     if (!data.name || !data.password) {
       setLoading(false);
       showAlert("error", "Please complete all fields");
+      setInputsDisabled(false); // Enable input fields if validation fails
       return;
     }
 
@@ -44,10 +48,12 @@ function AdminLogin() {
         passwordRef.current.value = "";
       } else {
         showAlert("error", "Please check name and password");
+        setInputsDisabled(false); // Enable input fields if login fails
       }
     } catch (error) {
       showAlert("error", "Please check name and password");
       console.error(error);
+      setInputsDisabled(false); // Enable input fields if login fails
     }
     setLoading(false);
   };
@@ -112,6 +118,7 @@ function AdminLogin() {
                     label="Name"
                     name="name"
                     autoFocus
+                    disabled={inputsDisabled} // Set disabled attribute based on state variable
                   />
                   <TextField
                     margin="normal"
@@ -122,13 +129,14 @@ function AdminLogin() {
                     label="Password"
                     type="password"
                     id="password"
+                    disabled={inputsDisabled} // Set disabled attribute based on state variable
                   />
                   <Button
                     onClick={handleSubmit}
                     fullWidth
                     variant="contained"
                     sx={{ mt: 3, mb: 2 }}
-                    disabled={loading}
+                    disabled={loading || inputsDisabled} // Disable button when loading or input fields are disabled
                   >
                     {loading ? "Signing In..." : "Sign In"}
                   </Button>

@@ -141,7 +141,9 @@ export default function Connection() {
     <>
       {/* Display loading indicator if data is loading */}
       {loading ? (
-        <CircularProgress />
+        <div className="d-flex justify-content-center align-items-center h-100 w-100 ">
+          <CircularProgress />
+        </div>
       ) : (
         <Grid
           container

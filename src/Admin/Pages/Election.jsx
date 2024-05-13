@@ -11,6 +11,7 @@ import AddButton from "../../Atoms/Button";
 import { Box, Grid, IconButton, TextField } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import Swal from "sweetalert2";
+import { CircularProgress } from "@mui/joy";
 
 const Election = () => {
   // Input titles and types for AddButton component
@@ -29,7 +30,11 @@ const Election = () => {
 
   // If loading, display loading indicator
   if (isLoading) {
-    return "Loading...";
+     return (
+       <div className="d-flex justify-content-center align-items-center h-100 w-100 ">
+         <CircularProgress />
+       </div>
+     );
   }
 
   // If error, display error message

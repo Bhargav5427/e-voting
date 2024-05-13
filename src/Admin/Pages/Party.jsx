@@ -15,6 +15,7 @@ import { Grid, IconButton, TextField, Box } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { Add } from "@mui/icons-material";
 import Swal from "sweetalert2";
+import { CircularProgress } from "@mui/joy";
 
 const Party = () => {
   const dispatch = useDispatch();
@@ -30,7 +31,11 @@ const Party = () => {
 
   // If loading, display loading indicator
   if (isLoading) {
-    return "loading...";
+    return (
+      <div className="d-flex justify-content-center align-items-center h-100 w-100 ">
+        <CircularProgress />
+      </div>
+    );
   }
 
   // If error, display error message

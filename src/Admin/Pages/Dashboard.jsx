@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Grid, ListItem, Box } from "@mui/joy";
+import { Grid, ListItem, Box, CircularProgress } from "@mui/joy";
 import DataTable from "../../Atoms/DataTable";
 import { useSelector } from "react-redux";
 import { FaPeopleGroup, FaUser } from "react-icons/fa6";
@@ -30,11 +30,6 @@ const Dashboard = () => {
   }
 
   const partyVotes = calculatePartyVotes(vote);
-
-  // If loading, display loading indicator
-  if (isLoading) {
-    return "loading...";
-  }
 
   // If error, display error message
   if (error) {
@@ -82,43 +77,51 @@ const Dashboard = () => {
 
   return (
     <>
-      {/* Progress bar cards */}
-      <Grid container spacing={19} columns={12} sx={{ flexGrow: 1 }}>
-        <Grid xs={4}>
-          <ListItem>
-            <ProgressBarCard
-              progressValue={party.length * 2}
-              icon={<FaPeopleGroup />}
-              title="TOTAL PARTY"
-              amount={party.length}
-            />
-          </ListItem>
-        </Grid>
-        <Grid xs={4}>
-          <ListItem>
-            <ProgressBarCard
-              icon={<BsInboxesFill />}
-              progressValue={election.length * 2}
-              title="TOTAL ELECTION"
-              amount={election.length}
-            />
-          </ListItem>
-        </Grid>
-        <Grid xs={4}>
-          <ListItem>
-            <ProgressBarCard
-              icon={<FaUser />}
-              progressValue={user.length * 2}
-              title="TOTAL VOTER"
-              amount={user.length}
-            />
-          </ListItem>
-        </Grid>
-      </Grid>
-      {/* DataTable */}
-      <Box mt={5}>
-        <DataTable columns={columns} rows={rows} height={430} />
-      </Box>
+      {/* Display loading indicator if data is loading */}
+      {isLoading ? (
+        <div className="d-flex justify-content-center align-items-center h-100 w-100 ">
+          <CircularProgress />
+        </div>
+      ) : (
+        <>
+          <Grid container spacing={19} columns={12} sx={{ flexGrow: 1 }}>
+            <Grid xs={4}>
+              <ListItem>
+                <ProgressBarCard
+                  progressValue={party.length * 2}
+                  icon={<FaPeopleGroup />}
+                  title="TOTAL PARTY"
+                  amount={party.length}
+                />
+              </ListItem>
+            </Grid>
+            <Grid xs={4}>
+              <ListItem>
+                <ProgressBarCard
+                  icon={<BsInboxesFill />}
+                  progressValue={election.length * 2}
+                  title="TOTAL ELECTION"
+                  amount={election.length}
+                />
+              </ListItem>
+            </Grid>
+            <Grid xs={4}>
+              <ListItem>
+                <ProgressBarCard
+                  icon={<FaUser />}
+                  progressValue={user.length * 2}
+                  title="TOTAL VOTER"
+                  amount={user.length}
+                />
+              </ListItem>
+            </Grid>
+          </Grid>
+          {/* DataTable */}
+          <Box mt={5}>
+            <DataTable columns={columns} rows={rows} height={430} />
+          </Box>
+        </>
+      )}
     </>
   );
 };
