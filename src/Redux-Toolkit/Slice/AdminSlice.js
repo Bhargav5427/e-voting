@@ -1,4 +1,5 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+// userSlice.js
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const initialState = {
@@ -16,43 +17,49 @@ const initialState = {
 // FETCH DATA
 export const fetchData = createAsyncThunk(
   "fetchData",
-  async ({ endpoint, dataType }) => {
+  async ({ endpoint, dataType }, { rejectWithValue }) => {
     try {
       const res = await axios.get(process.env.REACT_APP_BASE_URL + endpoint);
       return { data: res.data.data, dataType };
     } catch (err) {
-      throw err;
+      return rejectWithValue(err.response ? err.response.data : err.message);
     }
   }
 );
 
 // POST DATA
-export const postData = createAsyncThunk("postData", async (data) => {
-  let { endpoint, payload, dataType } = data;
-  try {
-    const res = await axios.post(process.env.REACT_APP_BASE_URL + endpoint, payload);
-    console.log("🚀 ~ postData ~ res:", res);
-    return { data: res.data, dataType };
-  } catch (err) {
-    // Extract status code from the error object
-    const statusCode = err.response ? err.response.status : 'Unknown';
-    throw statusCode;
+export const postData = createAsyncThunk(
+  "postData",
+  async (data, { rejectWithValue }) => {
+    let { endpoint, payload, dataType } = data;
+    try {
+      const res = await axios.post(
+        process.env.REACT_APP_BASE_URL + endpoint,
+        payload
+      );
+      return { data: res.data, dataType };
+    } catch (err) {
+      return rejectWithValue(err.response ? err.response.data : err.message);
+    }
   }
-});
+);
 
 // DELETE DATA
-export const deleteData = createAsyncThunk("deleteData", async (data) => {
-  let { endpoint, id, dataType } = data;
-  try {
-    const res = await axios.delete(process.env.REACT_APP_BASE_URL + endpoint + id);
-    return { data: id, dataType };
-  } catch (err) {
-    // Extract status code from the error object
-    const statusCode = err.response ? err.response.status : 'Unknown';
-    throw statusCode;
+export const deleteData = createAsyncThunk(
+  "deleteData",
+  async ( data , { rejectWithValue }) => {
+    let { endpoint, id, dataType } = data;
+    
+    try {
+      const res = await axios.delete(
+        process.env.REACT_APP_BASE_URL + endpoint + id
+      );
+      return { data: id, dataType };
+    } catch (err) {
+      return rejectWithValue(err.response ? err.response.data : err.message);
+    }
   }
-});
-
+);
 
 // Slice
 export const adminSlice = createSlice({
@@ -69,7 +76,7 @@ export const adminSlice = createSlice({
       })
       .addCase(fetchData.rejected, (state, action) => {
         state.isLoading = false;
-        state.isError = action.error.message || [];
+        state.isError = action.payload;
       })
       .addCase(fetchData.fulfilled, (state, action) => {
         state.isLoading = false;
@@ -102,9 +109,7 @@ export const adminSlice = createSlice({
       })
       .addCase(postData.rejected, (state, action) => {
         state.isLoading = false;
-        state.isError = action.error
-          ? action.error.message
-          : "An error occurred";
+        state.isError = action.payload;
       })
       .addCase(postData.fulfilled, (state, action) => {
         state.isLoading = false;
@@ -138,9 +143,7 @@ export const adminSlice = createSlice({
       })
       .addCase(deleteData.rejected, (state, action) => {
         state.isLoading = false;
-        state.isError = action.error
-          ? action.error.message
-          : "An error occurred";
+        state.isError = action.payload;
       })
       .addCase(deleteData.fulfilled, (state, action) => {
         state.isLoading = false;

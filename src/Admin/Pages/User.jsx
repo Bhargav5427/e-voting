@@ -6,7 +6,7 @@ import TextField from "@mui/material/TextField";
 import DataTable from "../../Atoms/DataTable";
 import AddButton from "../../Atoms/Button";
 import { useDispatch, useSelector } from "react-redux";
-import { postData } from "../../Redux-Toolkit/Slice/AdminSlice";
+import { deleteData, postData } from "../../Redux-Toolkit/Slice/AdminSlice";
 
 const User = () => {
   // Atomic Button
@@ -65,20 +65,26 @@ const User = () => {
   // Map user data for DataTable rows, handle potential null data
   const rows = data?.map((user) => ({
     id: user?._id,
-    cardNo: user?.cardNo || "",
-    name: user?.name || "",
-    fatherName: user?.fatherName || "",
-    sex: user?.sex || "",
-    dob: user?.dob || "",
-    assemblyNoandName: user?.assemblyNoandName || "",
-    partNoandName: user?.partNoandName || "",
-    password: user?.password || "",
-    address: user?.address || "",
+    cardNo: user?.cardNo || "null",
+    name: user?.name || "null",
+    fatherName: user?.fatherName || "null",
+    sex: user?.sex || "null",
+    dob: user?.dob || "null",
+    assemblyNoandName: user?.assemblyNoandName || "null",
+    partNoandName: user?.partNoandName || "null",
+    password: user?.password || "null",
+    address: user?.address || "null",
   }));
 
   // Dummy function for handling deletion and update (not implemented)
   const handleDelete = (id) => {
-    console.log(id);
+    dispatch(
+      deleteData({
+        id,
+        dataType: "user",
+        endpoint: process.env.REACT_APP_USER_DELETE_REQ,
+      })
+    );
   };
   const handleUpdate = () => {};
 

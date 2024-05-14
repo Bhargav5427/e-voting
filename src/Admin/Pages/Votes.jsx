@@ -25,10 +25,10 @@ const Votes = () => {
   // Map user data for DataTable rows, handle potential null data
   const rows = data?.map((user) => ({
     id: user?._id,
-    cardNo: user?.user.cardNo || "",
-    username: user?.user?.name || "",
-    partyname: user?.party?.party_name || "",
-    election: user?.election?.election_name || "",
+    cardNo: user?.user?.cardNo || "null", // Handle undefined by defaulting to "null"
+    username: user?.user?.name || "null", // Handle undefined by defaulting to "null"
+    partyname: user?.party?.party_name || "null", // Handle undefined by defaulting to "null"
+    election: user?.election?.election_name || "null", // Handle undefined by defaulting to "null"
   }));
 
   // Dummy function for handling deletion and update (not implemented)
@@ -48,7 +48,11 @@ const Votes = () => {
       title: "Vote deleted successfully",
     });
     dispatch(
-      deleteData({ endpoint: process.env.REACT_APP_VOTE_DELETE_REQ, dataType: "vote", id })
+      deleteData({
+        endpoint: process.env.REACT_APP_VOTE_DELETE_REQ,
+        dataType: "vote",
+        id,
+      })
     );
   };
   const handleUpdate = () => {};

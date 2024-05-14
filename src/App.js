@@ -19,6 +19,7 @@ const getRole = () => localStorage.getItem("role");
 const App = () => {
   const role = getRole();
   const location = useLocation();
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -33,7 +34,7 @@ const App = () => {
     dataTypes.forEach((dataType, index) => {
       dispatch(fetchData({ dataType, endpoint: endpoints[index] }));
     });
-  }, []);
+  }, [dispatch]);
 
   const isAdmin = role === "admin";
   const isUser = role === "user";

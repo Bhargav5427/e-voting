@@ -86,9 +86,9 @@ const Election = () => {
 
   // Map data for DataTable rows, handle potential null data
   const rows = filteredData.map((election) => ({
-    ElectionName: election?.election_name || "",
-    date: election?.date || "",
-    id: election?._id || "",
+    ElectionName: election?.election_name || "null",
+    date: election?.date || "null",
+    id: election?._id || "null",
   }));
 
   // Function to handle deletion of election

@@ -21,10 +21,6 @@ import {
 import Swal from "sweetalert2";
 
 export default function Connection() {
-  // Refs for dropdowns
-  const election = useRef();
-  const party = useRef();
-
   // State variables
   const [Election, setElection] = useState("");
   const [Party, setParty] = useState("");
@@ -53,6 +49,31 @@ export default function Connection() {
 
   // Function to handle form submission
   const handleSubmit = () => {
+    const finaldata = {
+      election: Election,
+      party: Party,
+    };
+
+    // Check if finaldata is empty
+    if (!finaldata.election || !finaldata.party) {
+      // Display alert if either election or party is empty
+      const Toast = Swal.mixin({
+        toast: true,
+        position: "top",
+        showConfirmButton: false,
+        timer: 1300,
+        didOpen: (toast) => {
+          toast.onmouseenter = Swal.stopTimer;
+          toast.onmouseleave = Swal.resumeTimer;
+        },
+      });
+      Toast.fire({
+        icon: "warning",
+        title: "please choose Connection",
+      });
+      return; // Exit the function early
+    }
+
     const Toast = Swal.mixin({
       toast: true,
       position: "top",
@@ -67,11 +88,6 @@ export default function Connection() {
       icon: "success",
       title: "Connection added successfully",
     });
-
-    const finaldata = {
-      election: Election,
-      party: Party,
-    };
     setLoading(true);
     dispatch(
       postData({
@@ -80,7 +96,10 @@ export default function Connection() {
         dataType: "connection",
       })
     ).then(() => setLoading(false));
+     setElection('')
+     setParty('')
   };
+
 
   // Columns configuration for DataTable
   const columns = [
@@ -100,9 +119,9 @@ export default function Connection() {
 
   // Rows configuration for DataTable
   const rows = Connection?.map((Connection) => ({
-    ElectionName: Connection?.election?.election_name,
-    Partyname: Connection?.party?.party_name,
-    id: Connection?._id,
+    ElectionName: Connection?.election?.election_name || "null" ,
+    Partyname: Connection?.party?.party_name || "null",
+    id: Connection?._id || "null",
   }));
 
   // Function to handle delete action
@@ -130,6 +149,7 @@ export default function Connection() {
         dataType: "connection",
       })
     ).then(() => setLoading(false));
+    
   };
 
   // Function to handle update action

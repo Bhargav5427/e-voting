@@ -13,7 +13,7 @@ const Dashboard = () => {
   );
   function calculatePartyVotes(data) {
     const partyVotes = {};
-    // Filter out entries where the user has voted for a party
+    // Filter out entries where the us    er has voted for a party
     const votedEntries = data.filter(
       (entry) => entry.party !== null && entry.election !== null
     );
@@ -59,9 +59,9 @@ const Dashboard = () => {
   ];
 
   const rows = party?.map((party) => ({
-    id: party._id,
-    img: party.party_logo,
-    party: party.party_name,
+    id: party._id || "null",
+    img: party.party_logo || "null",
+    party: party.party_name || "null",
     votes: partyVotes[party.party_name] || 0, // Set votes to 0 if party has no votes
   }));
 

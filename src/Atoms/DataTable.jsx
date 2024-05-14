@@ -73,6 +73,8 @@ export default function DataTable({
                             alt="Party Logo"
                             style={{ width: "50px" }}
                           />
+                        ) : value === "null" ? (
+                          <span style={{ color: "red" }}>null</span>
                         ) : (
                           value
                         )}

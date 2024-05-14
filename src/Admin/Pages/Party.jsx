@@ -26,9 +26,16 @@ const Party = () => {
   // Redux state selectors
   const data = useSelector((state) => state.admin.party);
   const isLoading = useSelector((state) => state.admin.isLoading);
-  const error = useSelector((state) => state.admin.isError);
-  console.log("🚀 ~ Party ~ error:", error);
-
+  // const { fetchDataError, deleteDataError, postDataError } = useSelector(
+  //   (state) => state.admin.errors
+  // );
+  // if(postDataError){
+  //   Swal.fire({
+  //     icon: "error",
+  //     title: "Oops...",
+  //     text: postDataError.error,
+  //     });
+  // }
   // If loading, display loading indicator
   if (isLoading) {
     return (
@@ -36,11 +43,6 @@ const Party = () => {
         <CircularProgress />
       </div>
     );
-  }
-
-  // If error, display error message
-  if (error) {
-    return error;
   }
 
   // Function to handle form submission for adding party
@@ -110,27 +112,15 @@ const Party = () => {
 
   const rows = filteredData.map((party) => ({
     id: party?._id,
-    PartyName: party?.party_name || "",
-    img: party?.party_logo || "",
-    PartySCode: party?.short_code || "",
+    PartyName: party?.party_name || "null",
+    img: party?.party_logo || "null",
+    PartySCode: party?.short_code || "null",
   }));
 
   // Function to handle deletion of party
   const handleDelete = (id) => {
-    const Toast = Swal.mixin({
-      toast: true,
-      position: "top",
-      showConfirmButton: false,
-      timer: 1300,
-      didOpen: (toast) => {
-        toast.onmouseenter = Swal.stopTimer;
-        toast.onmouseleave = Swal.resumeTimer;
-      },
-    });
-    Toast.fire({
-      icon: "success",
-      title: "party deleted successfully",
-    });
+    console.log("🚀 ~ handleDelete ~ id:", id)
+    
     dispatch(
       deleteData({
         endpoint: process.env.REACT_APP_PARTY_DELETE_REQ,
