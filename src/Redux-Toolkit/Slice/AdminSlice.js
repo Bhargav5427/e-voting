@@ -32,7 +32,7 @@ export const postData = createAsyncThunk(
   "postData",
   async (data, { rejectWithValue }) => {
     let { endpoint, payload, dataType } = data;
-    try {
+    try {z
       const res = await axios.post(
         process.env.REACT_APP_BASE_URL + endpoint,
         payload

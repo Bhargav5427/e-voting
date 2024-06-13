@@ -24,7 +24,6 @@ const Election = () => {
 
   // Redux dispatch
   const dispatch = useDispatch();
-
   // Search term state
   const [searchTerm, setSearchTerm] = useState("");
 

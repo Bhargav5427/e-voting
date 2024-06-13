@@ -22,24 +22,28 @@ const App = () => {
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const dataTypes = ["party", "election", "connection", "user", "vote"];
-    const endpoints = [
-      process.env.REACT_APP_PARTY_GET_REQ,
-      process.env.REACT_APP_ELECTION_GET_REQ,
-      process.env.REACT_APP_PARTYLIST_GET_REQ,
-      process.env.REACT_APP_USER_GET_REQ,
-      process.env.REACT_APP_VOTE_GET_REQ,
-    ];
-    dataTypes.forEach((dataType, index) => {
-      dispatch(fetchData({ dataType, endpoint: endpoints[index] }));
-    });
-  }, [dispatch]);
+
 
   const isAdmin = role === "admin";
   const isUser = role === "user";
   const isLoginPage = location.pathname === "/";
 
+  useEffect(() => {
+    if (role) {
+      const dataTypes = ["party", "election", "connection", "user", "vote"];
+      const endpoints = [
+        process.env.REACT_APP_PARTY_GET_REQ,
+        process.env.REACT_APP_ELECTION_GET_REQ,
+        process.env.REACT_APP_PARTYLIST_GET_REQ,
+        process.env.REACT_APP_USER_GET_REQ,
+        process.env.REACT_APP_VOTE_GET_REQ,
+      ];
+      dataTypes.forEach((dataType, index) => {
+        dispatch(fetchData({ dataType, endpoint: endpoints[index] }));
+      });
+    }
+  }, [role, dispatch]);
+  
   if (!role || role === "") {
     return (
       <Routes>
